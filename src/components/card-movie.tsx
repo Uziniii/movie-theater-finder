@@ -30,7 +30,7 @@ export function CardMovie({ movie, schedules }: Props) {
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge>{movie.director}</Badge>
             <Badge>{Intl.DateTimeFormat("fr-FR").format(new Date(movie.release))}</Badge>
-            {movie.genres.map((m, i) => (
+            {movie.genres.split(",").map((m, i) => (
               <Badge variant={"secondary"} key={i}>{m}</Badge>
             ))}
           </div>
@@ -38,7 +38,7 @@ export function CardMovie({ movie, schedules }: Props) {
             <div className="mb-4">
               <h3 className="font-semibold mb-1">Cast:</h3>
               <div className="flex flex-wrap gap-2 mb-4">
-                {movie.cast.map((m, i) => (
+                {movie.cast.split(",").map((m, i) => (
                   <Badge key={i}>{m}</Badge>
                 ))}
               </div>
@@ -50,12 +50,27 @@ export function CardMovie({ movie, schedules }: Props) {
               <AccordionItem key={i} value={`item-${i}`}>
                 <AccordionTrigger>{s.cinema}</AccordionTrigger>
                 <AccordionContent>
-                  <div className="flex flex-wrap gap-2">
-                    {s.showTimes.split(",").map((showtime, i) => (
-                      <Badge key={i} variant="default">
-                        {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
-                      </Badge>
-                    ))}
+                  
+                  <div>
+                    <div className="flex flex-wrap gap-2">
+                      {s.showTimesVO?.split(",").map((showtime, i) => (
+                        <Badge key={i} variant="default">
+                          {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
+                        </Badge>
+                      ))}
+
+                      {s.showTimesVF?.split(",").map((showtime, i) => (
+                        <Badge key={i} variant="default">
+                          {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
+                        </Badge>
+                      ))}
+
+                      {s.showTimesDUB?.split(",").map((showtime, i) => (
+                        <Badge key={i} variant="default">
+                          {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>

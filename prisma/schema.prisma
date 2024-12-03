@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["typedSql"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model cinemas {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique(map: "sqlite_autoindex_cinemas_1")
+  url       String
+  schedules schedules[]
+}
+
+model movies {
+  id        Int         @id @default(autoincrement())
+  title     String      @unique(map: "sqlite_autoindex_movies_1")
+  director  String
+  cast      String?
+  duration  Int?
+  poster    String
+  release   DateTime
+  synopsis  String?
+  genres    String
+  schedules schedules[]
+}
+
+model schedules {
+  id       Int      @id @default(autoincrement())
+  cinemaId Int
+  movieId  Int
+  showTime DateTime
+  version  String
+  movies   movies   @relation(fields: [movieId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cinemas  cinemas  @relation(fields: [cinemaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([showTime], map: "idx_schedules_showTime")
+}

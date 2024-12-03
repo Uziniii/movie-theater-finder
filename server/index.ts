@@ -1,21 +1,17 @@
 import { Cron } from "croner";
-import { db } from "./db/db.ts";
-import { seed } from "./db/seed.ts";
-import { scraping } from "./scraping.ts";
-import type { Cinema } from "./types/schema.ts";
+import { client } from "./db/client.ts";
 import { parseArgs } from "util";
 import { Elysia, t } from 'elysia'
 import { staticPlugin } from '@elysiajs/static'
-import { Movies } from "./db/models/Movies.ts";
+import { Movies, MOVIES_PER_PAGE } from "./db/models/Movies.ts";
 import { Schedules } from "./db/models/Schedules.ts";
+import { getMoviesData } from "@/fetch-allocine.ts";
+import cinemas from "@/../prisma/cinemas.json"
 
 const { values } = parseArgs({
   args: Bun.argv,
   options: {
-    "no-seed": {
-      type: 'boolean',
-    },
-    "scraping": {
+    "fetch": {
       type: 'boolean'
     }
   },
@@ -23,58 +19,73 @@ const { values } = parseArgs({
   allowPositionals: true,
 });
 
-if (!values["no-seed"]) {
-  seed(db)
-}
+await client.$executeRawUnsafe(`
+  INSERT OR IGNORE INTO cinemas (name, url) VALUES ${cinemas.map(x => `('${x.name}', '${x.url}')`).join(",")}
+`);
 
 const job = new Cron("@daily", async () => {
-  const cinemas = db.query("SELECT * FROM cinemas").all() as Cinema[];
+  let startTime = performance.now()
 
-  let movies = Array.from((await scraping(cinemas)).values())
+  const cinemas = await client.cinemas.findMany();
 
-  db.exec("DELETE FROM movies")
-  db.exec("DELETE FROM schedules")
+  const [moviesMap, requestNumber] = await getMoviesData(cinemas)
+  const movies = Array.from(moviesMap.values())
 
-  const insertMovie = db.prepare("INSERT INTO movies (title, director, cast, duration, poster, release, synopsis, genres) VALUES ($title, $director, $cast, $duration, $poster, $release, $synopsis, $genres)")
-  const insertShowtime = db.prepare("INSERT INTO schedules (cinemaId, movieId, showTime) VALUES ($cinemaId, $movieId, $showTime)")
+  await client.$transaction(async (tx) => {
+    await tx.schedules.deleteMany()
+    await tx.movies.deleteMany()
 
-  for (let i = 0; i < movies.length; i++) {
-    const m = movies[i];
+    for (let i = 0; i < movies.length; i++) {
+      const { title, cast, director, duration, genres, poster, release, schedule, synopsis } = movies[i];      
+      
+      const finalSchedule = []
+      const keys = Object.keys(schedule)
 
-    let schedule = Object.entries(m.schedule);
-
-    // @ts-ignore
-    delete m.schedule
-
-    let tM: any = Object.fromEntries(
-      Object
-        .entries(m)
-        .map(([key, value]) => [`$${key}`, value])
-    )
-
-    tM.$cast = tM.$cast.join(",")
-    tM.$genres = tM.$genres.join(",")
-    tM.$release = tM.$release.toJSON()
-
-    let id = insertMovie.run(tM as any).lastInsertRowid
-
-    for (let j = 0; j < schedule.length; j++) {
-      const [cinemaId, showtimes] = schedule[j];
-
-      for (let k = 0; k < showtimes.length; k++) {
-        const showtime = showtimes[k];
-
-        insertShowtime.run({
-          $cinemaId: cinemaId,
-          $movieId: id,
-          $showTime: showtime.toJSON()
-        } as any)
+      for (let j = 0; j < keys.length; j++) {
+        const key = keys[j];
+        
+        finalSchedule.push(
+          ...schedule[key].map(x => ({
+            cinemaId: +key,
+            showTime: x[0],
+            version: x[1],
+          }))
+        )
       }
+      
+      await tx.movies.create({
+        data: {
+          title,
+          director,
+          cast: cast.join(","),
+          poster,
+          release,
+          duration,
+          synopsis,
+          genres: genres.join(","),
+          schedules: {
+            createMany: {
+              data: finalSchedule
+            }
+          }
+        }
+      })
     }
-  }
+  })
+  
+  let [cinemasCount, moviesCount, schedulesCount] = [await client.cinemas.count(), await client.movies.count(), await client.schedules.count()]
+
+  console.table({
+    timeTaken: (performance.now() - startTime) / 1000,
+    requestNumber,
+    cinemasCount,
+    moviesCount,
+    schedulesCount
+  })
+  console.log(`Cinemas: ${cinemasCount} | Movies: ${moviesCount} | Schedules: ${schedulesCount}`)
 })
 
-if (values.scraping) {
+if (values.fetch) {
   job.trigger()
 }
 
@@ -88,19 +99,19 @@ const app = new Elysia()
   .get("/", () => Bun.file("./dist/index.html"))
   .group("/api", (app) =>
     app
-      .get("/movies", ({ movies, schedules, query }) => {
+      .get("/movies", async ({ movies, schedules, query }) => {
         const date = new Date(query.date ?? Date.now())
-        const maxPage = Math.floor(movies.getCount(date) / 15)
+        const maxPage = Math.floor(await movies.getCount(date) / MOVIES_PER_PAGE)
         let page = query.page ?? 1
 
         if (page > maxPage) page = maxPage
 
-        const moviesToday = movies.get(date, page)
+        const moviesToday = await movies.get(date, page)
 
         return {
           maxPage,
           movies: moviesToday,
-          schedules: schedules.get(moviesToday, date)
+          schedules: await schedules.get(moviesToday, date)
         }
       }, {
         query: t.Object({
@@ -110,3 +121,5 @@ const app = new Elysia()
       })
   )
   .listen(3000)
+
+console.log("Started on http://localhost:3000");

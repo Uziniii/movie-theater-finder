@@ -2,7 +2,9 @@ import { url } from "./lib/url"
 
 export type Schedule = {
   cinema: string
-  showTimes: string
+  showTimesVO: string | null
+  showTimesVF: string | null
+  showTimesDUB: string | null
   movieId: number
 }
 
@@ -10,12 +12,12 @@ export type Movie = {
   id: number
   title: string
   director: string
-  cast: string[]
+  cast: string
   duration: number
   poster: string
   release: string
   synopsis: string
-  genres: string[]
+  genres: string
 }
 
 export async function fetchMovies({ queryKey }: { queryKey: [string, Date | undefined] }) {

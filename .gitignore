@@ -174,4 +174,8 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
-db.db3
+# Database
+prisma/db.db3
+prisma/db.db3-journal
+
+a.ts
