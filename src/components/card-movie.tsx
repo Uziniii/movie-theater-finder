@@ -4,6 +4,13 @@ import type { Movie, Schedule } from "@/api"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
 import { Separator } from "./ui/separator"
 
+const versionToText = {
+  vo: "- VO",
+  vf: "- VF",
+  dub: "- Sous-titré",
+  null: ""
+}
+
 type Props = {
   movie: Movie
   schedules: Schedule[]
@@ -11,10 +18,10 @@ type Props = {
 
 export function CardMovie({ movie, schedules }: Props) {
   return <Card className="overflow-hidden">
-    <div className="md:flex">
+    <article className="md:flex">
       <div className="md:w-1/3 p-4">
         <img
-          src={movie.poster.replace("r_200_283", "r_800_1132")}
+          src={movie.poster === "" ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png" : movie.poster.replace("r_200_283", "r_800_1132")}
           alt={`${movie.title} Poster`}
           width={800}
           height={1132}
@@ -28,15 +35,15 @@ export function CardMovie({ movie, schedules }: Props) {
         </CardHeader>
         <CardContent className="p-0">
           <div className="flex flex-wrap gap-2 mb-4">
-            <Badge>{movie.director}</Badge>
+            {movie.director && <Badge>{movie.director}</Badge>}
             <Badge>{Intl.DateTimeFormat("fr-FR").format(new Date(movie.release))}</Badge>
             {movie.genres.split(",").map((m, i) => (
               <Badge variant={"secondary"} key={i}>{m}</Badge>
             ))}
           </div>
-          {movie.cast[0] !== "" && 
+          {movie.cast !== "" && 
             <div className="mb-4">
-              <h3 className="font-semibold mb-1">Cast:</h3>
+              <h3 className="font-semibold mb-1">Acteurs</h3>
               <div className="flex flex-wrap gap-2 mb-4">
                 {movie.cast.split(",").map((m, i) => (
                   <Badge key={i}>{m}</Badge>
@@ -48,29 +55,14 @@ export function CardMovie({ movie, schedules }: Props) {
           <Accordion type="single" collapsible className="w-full">
             {schedules.map((s, i) => (
               <AccordionItem key={i} value={`item-${i}`}>
-                <AccordionTrigger>{s.cinema}</AccordionTrigger>
+                <AccordionTrigger>{s.cinema} {versionToText[s.version ?? "null"]}</AccordionTrigger>
                 <AccordionContent>
-                  
-                  <div>
-                    <div className="flex flex-wrap gap-2">
-                      {s.showTimesVO?.split(",").map((showtime, i) => (
-                        <Badge key={i} variant="default">
-                          {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
-                        </Badge>
-                      ))}
-
-                      {s.showTimesVF?.split(",").map((showtime, i) => (
-                        <Badge key={i} variant="default">
-                          {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
-                        </Badge>
-                      ))}
-
-                      {s.showTimesDUB?.split(",").map((showtime, i) => (
-                        <Badge key={i} variant="default">
-                          {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
-                        </Badge>
-                      ))}
-                    </div>
+                  <div className="flex flex-wrap gap-2">
+                    {s.showTimes.split(",").map((showtime, i) => (
+                      <Badge key={i} variant="default">
+                        {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(+showtime))}
+                      </Badge>
+                    ))}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -78,6 +70,6 @@ export function CardMovie({ movie, schedules }: Props) {
           </Accordion>
         </CardContent>
       </div>
-    </div>
+    </article>
   </Card>
 }

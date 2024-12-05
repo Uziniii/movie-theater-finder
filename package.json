@@ -22,9 +22,9 @@
     "server:dev": "bun --watch server/index.ts",
     "server:build": "bun build server/index.ts --target bun --outdir ./server-dist",
     "server:start": "NODE_ENV=production bun server-dist/index.js",
-    "dev": "vite --port=3001",
-    "build": "vite build",
-    "serve": "vite preview"
+    "vite:dev": "vite --port=3001",
+    "vite:build": "vite build",
+    "vite:serve": "vite preview"
   },
   "dependencies": {
     "@elysiajs/static": "^1.1.1",
@@ -47,6 +47,7 @@
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.4",
     "zod": "^3.23.8"
   }
 }

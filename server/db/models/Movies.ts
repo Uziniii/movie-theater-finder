@@ -3,7 +3,7 @@ import { client } from "../client"
 export const MOVIES_PER_PAGE = 20
 
 export class Movies {
-  async getCount(date: Date) {
+  async getCount(date: Date, search: string | undefined) {
     let count = await client.$queryRaw<number>`
       SELECT COUNT(DISTINCT m.id) as count 
       FROM movies m 
@@ -14,7 +14,7 @@ export class Movies {
     return count
   }
 
-  async get(date: Date, page: number) {
+  async get(date: Date, page: number, search: string | undefined) {
     let m = await client.movies.findMany({
       where: {
         schedules: {
@@ -23,6 +23,9 @@ export class Movies {
               gt: date
             }
           }
+        },
+        title: {
+          contains: search
         }
       },
       include: {
@@ -33,10 +36,9 @@ export class Movies {
           _count: "desc"
         }
       },
-      take: page * MOVIES_PER_PAGE
+      take: MOVIES_PER_PAGE,
+      skip: page * MOVIES_PER_PAGE
     })
-    console.log(m);
-    
 
     return m
   }

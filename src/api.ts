@@ -2,9 +2,8 @@ import { url } from "./lib/url"
 
 export type Schedule = {
   cinema: string
-  showTimesVO: string | null
-  showTimesVF: string | null
-  showTimesDUB: string | null
+  showTimes: string
+  version: "vo" | "vf" | "dub"
   movieId: number
 }
 
@@ -20,8 +19,14 @@ export type Movie = {
   genres: string
 }
 
-export async function fetchMovies({ queryKey }: { queryKey: [string, Date | undefined] }) {
-  const response = await fetch(url("/api/movies", { date: queryKey[1]?.toJSON() }))
+export async function fetchMovies({ queryKey }: { queryKey: [string, string | undefined, number | undefined, string | undefined] }) {
+  const response = await fetch(
+    url("/api/movies", {
+      date: queryKey[1],
+      page: queryKey[2],
+      search: queryKey[3]
+    })
+  )
   
   if (!response.ok) {
     throw new Error('Network response was not ok')

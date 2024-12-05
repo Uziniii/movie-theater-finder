@@ -82,7 +82,6 @@ const job = new Cron("@daily", async () => {
     moviesCount,
     schedulesCount
   })
-  console.log(`Cinemas: ${cinemasCount} | Movies: ${moviesCount} | Schedules: ${schedulesCount}`)
 })
 
 if (values.fetch) {
@@ -101,22 +100,23 @@ const app = new Elysia()
     app
       .get("/movies", async ({ movies, schedules, query }) => {
         const date = new Date(query.date ?? Date.now())
-        const maxPage = Math.floor(await movies.getCount(date) / MOVIES_PER_PAGE)
-        let page = query.page ?? 1
+        const maxPage = Math.floor(await movies.getCount(date, query.search) / MOVIES_PER_PAGE)
+        let page = query.page ?? 0
 
         if (page > maxPage) page = maxPage
 
-        const moviesToday = await movies.get(date, page)
+        const moviesToday = await movies.get(date, page, query.search)
 
         return {
           maxPage,
           movies: moviesToday,
-          schedules: await schedules.get(moviesToday, date)
+          schedules: moviesToday.length === 0 ? [] : await schedules.get(moviesToday, date)
         }
       }, {
         query: t.Object({
           date: t.Optional(t.String()),
-          page: t.Optional(t.Number({ minimum: 1 })),
+          page: t.Optional(t.Number({ minimum: 0 })),
+          search: t.Optional(t.String()),
         })
       })
   )
