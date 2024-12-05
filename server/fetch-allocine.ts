@@ -80,7 +80,7 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
           genres: movie.genres.map(x => x.translate),
           poster: movie.poster !== null ? movie.poster.url : "",
           release: new Date(movie.releases.at(-1)?.releaseDate?.date ?? Date.now()),
-          synopsis: movie.synopsis,
+          synopsis: movie.synopsis_json?.body?.[0]?.children?.[0]?.text ?? "",
           schedule,
         })
       }
