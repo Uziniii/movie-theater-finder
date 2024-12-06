@@ -1,57 +1,486 @@
 [
-  {
-    "name": "Écoles Cinéma Club",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0071.html"
-  }, {
-    "name": "MK2 Bibliothèque",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C2954.html"
-  }, {
-    "name": "MK2 Beaubourg",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0050.html"
-  }, {
-    "name": "Épée de bois",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=W7504.html"
-  }, {
-    "name": "Cinéma du Panthéon",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0076.html"
-  }, {
-    "name": "Max Linder Panorama",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0089.html"
-  }, {
-    "name": "Luminor Hotel de Ville",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0013.html"
-  }, {
-    "name": "Le Grand Action",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0072.html"
-  }, {
-    "name": "MK2 Parnasse",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0099.html"
-  }, {
-    "name": "Le Champo",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0073.html"
-  }, {
-    "name": "Filmothèque du Quartier Latin",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0020.html"
-  }, {
-    "name": "Reflet Medicis",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0074.html"
-  }, {
-    "name": "UGC Ciné Cité Les Halles",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0159.html"
-  }, {
-    "name": "UGC Ciné Cité Bercy",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0026.html"
-  }, {
-    "name": "La Cinémathèque française",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C1559.html"
-  }, {
-    "name": "Le Louxor Palais du cinéma",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=W7510.html"
-  },{
-    "name": "Cinéma Studio 28",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0061.html"
-  },{
-    "name": "Le Reflet Médicis ",
-    "url": "https://www.allocine.fr/seance/salle_gen_csalle=C0074.html"
-  }
+    {
+        "name": "UGC Ciné Cité Les Halles",
+        "url": "/seance/salle_gen_csalle=C0159.html"
+    },
+    {
+        "name": "UGC Ciné Cité Bercy",
+        "url": "/seance/salle_gen_csalle=C0026.html"
+    },
+    {
+        "name": "MK2 Bibliothèque",
+        "url": "/seance/salle_gen_csalle=C2954.html"
+    },
+    {
+        "name": "Pathé Wepler",
+        "url": "/seance/salle_gen_csalle=C0179.html"
+    },
+    {
+        "name": "Pathé Parnasse - Premium",
+        "url": "/seance/salle_gen_csalle=C0158.html"
+    },
+    {
+        "name": "Pathé Aquaboulevard",
+        "url": "/seance/salle_gen_csalle=C0116.html"
+    },
+    {
+        "name": "MK2 Quai de Seine",
+        "url": "/seance/salle_gen_csalle=C0003.html"
+    },
+    {
+        "name": "MK2 Quai de Loire",
+        "url": "/seance/salle_gen_csalle=C1621.html"
+    },
+    {
+        "name": "UGC Montparnasse",
+        "url": "/seance/salle_gen_csalle=C0103.html"
+    },
+    {
+        "name": "UGC Gobelins",
+        "url": "/seance/salle_gen_csalle=C0150.html"
+    },
+    {
+        "name": "Gaumont Opéra (côté Capucines)",
+        "url": "/seance/salle_gen_csalle=C0125.html"
+    },
+    {
+        "name": "MK2 Gambetta",
+        "url": "/seance/salle_gen_csalle=C0192.html"
+    },
+    {
+        "name": "Pathé Opéra Premier",
+        "url": "/seance/salle_gen_csalle=C0060.html"
+    },
+    {
+        "name": "Pathé Convention",
+        "url": "/seance/salle_gen_csalle=C0161.html"
+    },
+    {
+        "name": "MK2 Bastille (côté Beaumarchais)",
+        "url": "/seance/salle_gen_csalle=C0140.html"
+    },
+    {
+        "name": "UGC Ciné Cité Les Halles",
+        "url": "/seance/salle_gen_csalle=C0159.html"
+    },
+    {
+        "name": "UGC Ciné Cité Bercy",
+        "url": "/seance/salle_gen_csalle=C0026.html"
+    },
+    {
+        "name": "MK2 Bibliothèque",
+        "url": "/seance/salle_gen_csalle=C2954.html"
+    },
+    {
+        "name": "Pathé Wepler",
+        "url": "/seance/salle_gen_csalle=C0179.html"
+    },
+    {
+        "name": "Pathé Parnasse - Premium",
+        "url": "/seance/salle_gen_csalle=C0158.html"
+    },
+    {
+        "name": "Pathé Aquaboulevard",
+        "url": "/seance/salle_gen_csalle=C0116.html"
+    },
+    {
+        "name": "MK2 Quai de Seine",
+        "url": "/seance/salle_gen_csalle=C0003.html"
+    },
+    {
+        "name": "MK2 Quai de Loire",
+        "url": "/seance/salle_gen_csalle=C1621.html"
+    },
+    {
+        "name": "UGC Montparnasse",
+        "url": "/seance/salle_gen_csalle=C0103.html"
+    },
+    {
+        "name": "UGC Gobelins",
+        "url": "/seance/salle_gen_csalle=C0150.html"
+    },
+    {
+        "name": "Gaumont Opéra (côté Capucines)",
+        "url": "/seance/salle_gen_csalle=C0125.html"
+    },
+    {
+        "name": "MK2 Gambetta",
+        "url": "/seance/salle_gen_csalle=C0192.html"
+    },
+    {
+        "name": "Pathé Opéra Premier",
+        "url": "/seance/salle_gen_csalle=C0060.html"
+    },
+    {
+        "name": "Pathé Convention",
+        "url": "/seance/salle_gen_csalle=C0161.html"
+    },
+    {
+        "name": "MK2 Bastille (côté Beaumarchais)",
+        "url": "/seance/salle_gen_csalle=C0140.html"
+    },
+    {
+        "name": "Pathé Alésia - Dolby Cinema",
+        "url": "/seance/salle_gen_csalle=C0037.html"
+    },
+    {
+        "name": "Le Grand Rex",
+        "url": "/seance/salle_gen_csalle=C0065.html"
+    },
+    {
+        "name": "UGC Lyon Bastille",
+        "url": "/seance/salle_gen_csalle=C0146.html"
+    },
+    {
+        "name": "MK2 Beaubourg",
+        "url": "/seance/salle_gen_csalle=C0050.html"
+    },
+    {
+        "name": "MK2 Nation",
+        "url": "/seance/salle_gen_csalle=C0144.html"
+    },
+    {
+        "name": "UGC Odéon",
+        "url": "/seance/salle_gen_csalle=C0104.html"
+    },
+    {
+        "name": "Pathé Beaugrenelle - Dolby Cinema",
+        "url": "/seance/salle_gen_csalle=W7502.html"
+    },
+    {
+        "name": "UGC Opéra",
+        "url": "/seance/salle_gen_csalle=C0126.html"
+    },
+    {
+        "name": "MK2 Odéon (Côté St Germain)",
+        "url": "/seance/salle_gen_csalle=C0097.html"
+    },
+    {
+        "name": "UGC Danton",
+        "url": "/seance/salle_gen_csalle=C0102.html"
+    },
+    {
+        "name": "UGC Ciné Cité Maillot",
+        "url": "/seance/salle_gen_csalle=C0175.html"
+    },
+    {
+        "name": "MK2 Bastille (côté Fg St Antoine)",
+        "url": "/seance/salle_gen_csalle=C0040.html"
+    },
+    {
+        "name": "Le Cinéma des Cinéastes",
+        "url": "/seance/salle_gen_csalle=C0004.html"
+    },
+    {
+        "name": "Pathé Les Fauvettes",
+        "url": "/seance/salle_gen_csalle=C0024.html"
+    },
+    {
+        "name": "Majestic Bastille",
+        "url": "/seance/salle_gen_csalle=C0139.html"
+    },
+    {
+        "name": "Les Cinq Caumartin",
+        "url": "/seance/salle_gen_csalle=C0012.html"
+    },
+    {
+        "name": "Filmothèque du Quartier Latin",
+        "url": "/seance/salle_gen_csalle=C0020.html"
+    },
+    {
+        "name": "MK2 Odéon (Côté St Michel)",
+        "url": "/seance/salle_gen_csalle=C0092.html"
+    },
+    {
+        "name": "UGC Ciné Cité Paris 19",
+        "url": "/seance/salle_gen_csalle=W7509.html"
+    },
+    {
+        "name": "Le Champo - Espace Jacques Tati",
+        "url": "/seance/salle_gen_csalle=C0073.html"
+    },
+    {
+        "name": "Le Louxor - Palais du cinéma",
+        "url": "/seance/salle_gen_csalle=W7510.html"
+    },
+    {
+        "name": "Reflet Medicis",
+        "url": "/seance/salle_gen_csalle=C0074.html"
+    },
+    {
+        "name": "Majestic Passy",
+        "url": "/seance/salle_gen_csalle=C0120.html"
+    },
+    {
+        "name": "Pathé Montparnos",
+        "url": "/seance/salle_gen_csalle=C0052.html"
+    },
+    {
+        "name": "Sept Parnassiens",
+        "url": "/seance/salle_gen_csalle=C0025.html"
+    },
+    {
+        "name": "Max Linder Panorama",
+        "url": "/seance/salle_gen_csalle=C0089.html"
+    },
+    {
+        "name": "L'Arlequin",
+        "url": "/seance/salle_gen_csalle=C0054.html"
+    },
+    {
+        "name": "UGC Rotonde",
+        "url": "/seance/salle_gen_csalle=C0105.html"
+    },
+    {
+        "name": "Le Balzac",
+        "url": "/seance/salle_gen_csalle=C0009.html"
+    },
+    {
+        "name": "Le Grand Action",
+        "url": "/seance/salle_gen_csalle=C0072.html"
+    },
+    {
+        "name": "Publicis Cinémas",
+        "url": "/seance/salle_gen_csalle=C6336.html"
+    },
+    {
+        "name": "Escurial",
+        "url": "/seance/salle_gen_csalle=C0147.html"
+    },
+    {
+        "name": "Christine Cinéma Club",
+        "url": "/seance/salle_gen_csalle=C0015.html"
+    },
+    {
+        "name": "MK2 Parnasse",
+        "url": "/seance/salle_gen_csalle=C0099.html"
+    },
+    {
+        "name": "Écoles Cinéma Club",
+        "url": "/seance/salle_gen_csalle=C0071.html"
+    },
+    {
+        "name": "Luminor Hôtel de Ville",
+        "url": "/seance/salle_gen_csalle=C0013.html"
+    },
+    {
+        "name": "CGR Paris - Lilas",
+        "url": "/seance/salle_gen_csalle=W7519.html"
+    },
+    {
+        "name": "Les 3 Luxembourg",
+        "url": "/seance/salle_gen_csalle=C0095.html"
+    },
+    {
+        "name": "Pathé La Villette - IMAX",
+        "url": "/seance/salle_gen_csalle=W7520.html"
+    },
+    {
+        "name": "Elysées Lincoln",
+        "url": "/seance/salle_gen_csalle=C0108.html"
+    },
+    {
+        "name": "Le Brady",
+        "url": "/seance/salle_gen_csalle=C0023.html"
+    },
+    {
+        "name": "Nouvel Odéon",
+        "url": "/seance/salle_gen_csalle=C0041.html"
+    },
+    {
+        "name": "Cinéma Studio 28",
+        "url": "/seance/salle_gen_csalle=C0061.html"
+    },
+    {
+        "name": "Cinéma Chaplin Saint Lambert",
+        "url": "/seance/salle_gen_csalle=W7515.html"
+    },
+    {
+        "name": "Espace Saint-Michel",
+        "url": "/seance/salle_gen_csalle=C0117.html"
+    },
+    {
+        "name": "Saint-André des Arts",
+        "url": "/seance/salle_gen_csalle=C0100.html"
+    },
+    {
+        "name": "Cinéma du Panthéon",
+        "url": "/seance/salle_gen_csalle=C0076.html"
+    },
+    {
+        "name": "Lucernaire",
+        "url": "/seance/salle_gen_csalle=C0093.html"
+    },
+    {
+        "name": "Cinéma Chaplin Denfert",
+        "url": "/seance/salle_gen_csalle=C0153.html"
+    },
+    {
+        "name": "L'Entrepôt",
+        "url": "/seance/salle_gen_csalle=C0005.html"
+    },
+    {
+        "name": "L'Archipel",
+        "url": "/seance/salle_gen_csalle=C0134.html"
+    },
+    {
+        "name": "7 Batignolles",
+        "url": "/seance/salle_gen_csalle=P7517.html"
+    },
+    {
+        "name": "Silencio des Prés",
+        "url": "/seance/salle_gen_csalle=C0096.html"
+    },
+    {
+        "name": "Studio Galande",
+        "url": "/seance/salle_gen_csalle=C0016.html"
+    },
+    {
+        "name": "La Clef",
+        "url": "/seance/salle_gen_csalle=C0170.html"
+    },
+    {
+        "name": "Mac-Mahon",
+        "url": "/seance/salle_gen_csalle=C0172.html"
+    },
+    {
+        "name": "La Cinémathèque française",
+        "url": "/seance/salle_gen_csalle=C1559.html"
+    },
+    {
+        "name": "MK2 Grand Palais",
+        "url": "/seance/salle_gen_csalle=W7508.html"
+    },
+    {
+        "name": "Forum des images",
+        "url": "/seance/salle_gen_csalle=C0119.html"
+    },
+    {
+        "name": "Studio des Ursulines",
+        "url": "/seance/salle_gen_csalle=C0083.html"
+    },
+    {
+        "name": "Studio Luxembourg Accattone",
+        "url": "/seance/salle_gen_csalle=W7505.html"
+    },
+    {
+        "name": "La Géode",
+        "url": "/seance/salle_gen_csalle=C0189.html"
+    },
+    {
+        "name": "Centre Georges Pompidou",
+        "url": "/seance/salle_gen_csalle=C0127.html"
+    },
+    {
+        "name": "Club de l'Etoile",
+        "url": "/seance/salle_gen_csalle=W7517.html"
+    },
+    {
+        "name": "Le Ranelagh",
+        "url": "/seance/salle_gen_csalle=W7516.html"
+    },
+    {
+        "name": "Institut finlandais",
+        "url": "/seance/salle_gen_csalle=C0014.html"
+    },
+    {
+        "name": "Fondation Jerome Seydoux - Pathé",
+        "url": "/seance/salle_gen_csalle=W7513.html"
+    },
+    {
+        "name": "Théatre du Marais",
+        "url": "/seance/salle_gen_csalle=W7500.html"
+    },
+    {
+        "name": "Le Miramar",
+        "url": "/seance/salle_gen_csalle=W7512.html"
+    },
+    {
+        "name": "Maison de la Culture du Japon à Paris - MCJP",
+        "url": "/seance/salle_gen_csalle=C0178.html"
+    },
+    {
+        "name": "Cite des Sciences",
+        "url": "/seance/salle_gen_csalle=C0056.html"
+    },
+    {
+        "name": "Centre culturel irlandais",
+        "url": "/seance/salle_gen_csalle=C2756.html"
+    },
+    {
+        "name": "Cinéma en plein air de la Villette",
+        "url": "/seance/salle_gen_csalle=W7501.html"
+    },
+    {
+        "name": "Centre Wallonie-Bruxelles",
+        "url": "/seance/salle_gen_csalle=C0059.html"
+    },
+    {
+        "name": "Institut du monde arabe",
+        "url": "/seance/salle_gen_csalle=W7523.html"
+    },
+    {
+        "name": "La Gaîté lyrique",
+        "url": "/seance/salle_gen_csalle=W7503.html"
+    },
+    {
+        "name": "Jeu de Paume",
+        "url": "/seance/salle_gen_csalle=W7588.html"
+    },
+    {
+        "name": "Pathé Palace",
+        "url": "/seance/salle_gen_csalle=G02BG.html"
+    },
+    {
+        "name": "Musee d'Orsay, Auditorium",
+        "url": "/seance/salle_gen_csalle=C0030.html"
+    },
+    {
+        "name": "Cinéma cité de l'architecture et du patrimoine",
+        "url": "/seance/salle_gen_csalle=W7616.html"
+    },
+    {
+        "name": "Epée de bois",
+        "url": "/seance/salle_gen_csalle=W7504.html"
+    },
+    {
+        "name": "Auditorium du Musée du Louvre",
+        "url": "/seance/salle_gen_csalle=C0169.html"
+    },
+    {
+        "name": "Pickup VR cinéma",
+        "url": "/seance/salle_gen_csalle=W5003.html"
+    },
+    {
+        "name": "Palais de la Porte Dorée",
+        "url": "/seance/salle_gen_csalle=P5012.html"
+    },
+    {
+        "name": "Cite de la Musique. Amphithéâtre du Musee",
+        "url": "/seance/salle_gen_csalle=C0403.html"
+    },
+    {
+        "name": "Cinéma du musée du quai Branly - Jacques Chirac",
+        "url": "/seance/salle_gen_csalle=P0007.html"
+    },
+    {
+        "name": "Institut Hongrois de Paris",
+        "url": "/seance/salle_gen_csalle=W7506.html"
+    },
+    {
+        "name": "Centre Culturel Suisse",
+        "url": "/seance/salle_gen_csalle=W0375.html"
+    },
+    {
+        "name": "Guimet - Musée national des arts asiatiques",
+        "url": "/seance/salle_gen_csalle=P5016.html"
+    },
+    {
+        "name": "Artistic Théâtre",
+        "url": "/seance/salle_gen_csalle=W1175.html"
+    },
+    {
+        "name": "Goethe Institut Paris",
+        "url": "/seance/salle_gen_csalle=W1675.html"
+    }
 ]

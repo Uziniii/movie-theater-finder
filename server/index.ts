@@ -20,7 +20,7 @@ const { values } = parseArgs({
 });
 
 await client.$executeRawUnsafe(`
-  INSERT OR IGNORE INTO cinemas (name, url) VALUES ${cinemas.map(x => `('${x.name}', '${x.url}')`).join(",")}
+  INSERT OR IGNORE INTO cinemas (name, url) VALUES ${cinemas.map(x => `("${x.name}", "${x.url}")`).join(",")}
 `);
 
 const job = new Cron("@daily", async () => {

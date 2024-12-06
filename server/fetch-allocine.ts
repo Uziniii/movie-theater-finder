@@ -7,6 +7,8 @@ type Schedule = {
 
 type MoviesMap = Map<string, Omit<Movie, "id"> & { schedule: Schedule }>
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, number]> {
   let requestNumber = 0;
   const movies: MoviesMap = new Map();
@@ -25,7 +27,7 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
         "pragma": "no-cache",
         "priority": "u=1, i",
       },
-      "referrer": `${cinema.url}#shwt_date=${formatedDate}`,
+      "referrer": `https://www.allocine.fr/${cinema.url}#shwt_date=${formatedDate}`,
       "referrerPolicy": "strict-origin-when-cross-origin",
       "body": JSON.stringify({ "filters": [] }),
       "method": "POST",
@@ -34,10 +36,17 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
     })).json() as AllocineMoviesResponse;
 
     requestNumber++;
-    
+
+    if (requestNumber % 200 === 0) {
+      await delay(10000)
+      console.log("..."); 
+    }
+
     for (let i = 0; i < result.results.length; i++) {
       const { movie, showtimes } = result.results[i];
-
+      
+      if (!movie) break
+      
       let m = movies.get(movie.title)
       
       let schedule: Schedule = m

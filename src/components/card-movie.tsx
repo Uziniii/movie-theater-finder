@@ -28,7 +28,7 @@ export function CardMovie({ movie, schedules }: Props) {
           className="w-full h-auto object-cover rounded-md"
         />
       </div>
-      <div className="md:w-2/3 p-6">
+      <div className="md:w-2/3 p-6 border-l">
         <CardHeader className="p-0 mb-4">
           <CardTitle className="text-2xl mb-2">{movie.title}</CardTitle>
           <CardDescription>{movie.synopsis}</CardDescription>
@@ -51,7 +51,6 @@ export function CardMovie({ movie, schedules }: Props) {
               </div>
             </div>
           }
-          <Separator className="my-4" />
           <Accordion type="single" collapsible className="w-full">
             {schedules.map((s, i) => (
               <AccordionItem key={i} value={`item-${i}`}>

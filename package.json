@@ -24,7 +24,8 @@
     "server:start": "NODE_ENV=production bun server-dist/index.js",
     "vite:dev": "vite --port=3001",
     "vite:build": "vite build",
-    "vite:serve": "vite preview"
+    "vite:serve": "vite preview",
+    "generate:cinemas": "bun run server/generate-cinemas-file.ts"
   },
   "dependencies": {
     "@elysiajs/static": "^1.1.1",
@@ -36,12 +37,12 @@
     "@tanstack/react-query": "^5.62.1",
     "@tanstack/react-router": "^1.85.0",
     "@tanstack/router-devtools": "^1.85.0",
+    "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "croner": "^9.0.0",
     "elysia": "^1.1.25",
     "lucide-react": "^0.456.0",
-    "playwright": "^1.49.0",
     "prisma": "^6.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
