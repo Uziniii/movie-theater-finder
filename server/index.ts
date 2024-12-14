@@ -36,14 +36,14 @@ const job = new Cron("@daily", async () => {
     await tx.movies.deleteMany()
 
     for (let i = 0; i < movies.length; i++) {
-      const { title, cast, director, duration, genres, poster, release, schedule, synopsis } = movies[i];      
-      
+      const { title, cast, director, duration, genres, poster, release, schedule, synopsis } = movies[i];
+
       const finalSchedule = []
       const keys = Object.keys(schedule)
 
       for (let j = 0; j < keys.length; j++) {
         const key = keys[j];
-        
+
         finalSchedule.push(
           ...schedule[key].map(x => ({
             cinemaId: +key,
@@ -52,7 +52,7 @@ const job = new Cron("@daily", async () => {
           }))
         )
       }
-      
+
       await tx.movies.create({
         data: {
           title,
@@ -72,7 +72,7 @@ const job = new Cron("@daily", async () => {
       })
     }
   })
-  
+
   let [cinemasCount, moviesCount, schedulesCount] = [await client.cinemas.count(), await client.movies.count(), await client.schedules.count()]
 
   console.table({
@@ -107,10 +107,28 @@ const app = new Elysia()
 
         const moviesToday = await movies.get(date, page, query.search)
 
+        if (moviesToday.length === 0) {
+          return {
+            maxPage: 0,
+            movies: [],
+            schedules: []
+          }
+        }
+
+        const moviesSchedules = await schedules.get(moviesToday, date)
+
+        if (moviesSchedules.length === 0) {
+          return {
+            maxPage: 0,
+            movies: [],
+            schedules: []
+          }
+        }
+
         return {
           maxPage,
           movies: moviesToday,
-          schedules: moviesToday.length === 0 ? [] : await schedules.get(moviesToday, date)
+          schedules: moviesSchedules
         }
       }, {
         query: t.Object({
