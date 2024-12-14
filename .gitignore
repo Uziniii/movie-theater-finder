@@ -175,7 +175,7 @@ dist
 .DS_Store
 
 # Database
-prisma/db.db3
-prisma/db.db3-journal
+prisma/*.db*
+prisma/*.db*-journal
 
 a.ts
