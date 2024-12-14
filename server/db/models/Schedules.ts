@@ -12,10 +12,6 @@ export class Schedules {
     const schedules = await client.$queryRaw<Schedule[]>`
       SELECT
         c.name as cinema,
-        -- GROUP_CONCAT(CASE WHEN s.version = "vo" THEN s.showTime END ORDER BY s.showTime) as showTimesVO,
-        -- GROUP_CONCAT(CASE WHEN s.version = "vf" THEN s.showTime END ORDER BY s.showTime) as showTimesVF,
-        -- GROUP_CONCAT(CASE WHEN s.version = "dub" THEN s.showTime END ORDER BY s.showTime) as showTimesDub,
-        -- CASE WHEN COUNT(DISTINCT s.version) = 1 THEN s.version ELSE NULL END as version,
         GROUP_CONCAT(s.showTime ORDER BY s.showTime) as showTimes,
         s.version,
         s.movieId

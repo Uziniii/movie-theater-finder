@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { ThemeProvider } from '@/components/theme-provider'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === 'production'
@@ -22,6 +23,7 @@ function RootComponent() {
   return (
     <ThemeProvider defaultTheme="dark">
       <Outlet />
+      <ReactQueryDevtools initialIsOpen={false} />
       <React.Suspense>
         <TanStackRouterDevtools position="bottom-right" />
       </React.Suspense>
