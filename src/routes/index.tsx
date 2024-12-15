@@ -6,7 +6,7 @@ import { fetchMovies } from '@/api'
 import { CardMovie } from '@/components/card-movie'
 import z from "zod"
 import { Skeleton } from '@/components/ui/skeleton'
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { Separator } from '@/components/ui/separator'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from "use-debounce";
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/')({
 function HomeComponent() {
   const search = Route.useSearch() as MoviesSearch
   const navigate = useNavigate({ from: Route.fullPath })
-  
+
   const dates = useMemo(() => {
     return [...Array(7)].map((_, i) => {
       let today = new Date(Date.now())
@@ -100,24 +100,32 @@ function HomeComponent() {
         <div className="flex flex-col gap-4 md:gap-8">
           {isSuccess
             ? data.movies.map(m => (
-              <CardMovie 
+              <CardMovie
                 movie={m}
                 key={m.id}
               />
             ))
-            : [...Array(10)].map((_, i) => <Skeleton key={i} className='h-[500px]'/>)
+            : [...Array(10)].map((_, i) => <Skeleton key={i} className='h-[500px]' />)
           }
         </div>
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious to="/" search={{ date: search.date, page: search.page === undefined ? 0 : search.page - 1 }}/>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext to="/" search={{ date: search.date, page: search.page === undefined ? 1 : search.page + 1 }}/>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        {isSuccess &&
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious to="/" search={{ ...search, page: search.page === undefined ? 0 : search.page - 1 }} />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink to='/' isActive={search.page === 0 || search.page === undefined} search={{ ...search, page: 0 }}>1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink to='/' isActive={search.page === data.maxPage} search={{ ...search, page: data.maxPage }}>{data.maxPage}</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext to="/" search={{ ...search, page: search.page === undefined ? 1 : search.page + 1 }} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        }
       </div>
     </main>
   </>
