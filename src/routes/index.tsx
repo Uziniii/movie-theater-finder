@@ -6,11 +6,11 @@ import { fetchMovies } from '@/api'
 import { CardMovie } from '@/components/card-movie'
 import z from "zod"
 import { Skeleton } from '@/components/ui/skeleton'
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { Separator } from '@/components/ui/separator'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from "use-debounce";
 import { SearchIcon } from 'lucide-react'
+import { Pagination } from '@/components/pagination'
 
 const moviesSearchSchema = z.object({
   date: z.string().optional(),
@@ -18,7 +18,7 @@ const moviesSearchSchema = z.object({
   search: z.string().optional()
 })
 
-type MoviesSearch = z.infer<typeof moviesSearchSchema>
+export type MoviesSearch = z.infer<typeof moviesSearchSchema>
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -60,7 +60,7 @@ function HomeComponent() {
     navigate({
       search: (prev: any) => ({
         ...prev,
-        search: debouncedSearch || null,
+        search: debouncedSearch || undefined,
       })
     })
   }, [debouncedSearch])
@@ -73,6 +73,7 @@ function HomeComponent() {
     queryKey: ["movies", search.date, search.page, search.search],
     queryFn: fetchMovies,
     enabled: true,
+    refetchOnWindowFocus: false
   })
 
   return <>
@@ -83,7 +84,7 @@ function HomeComponent() {
         </Link>
         <div className="items-center flex-grow flex flex-row gap-3">
           <Input className='h-10 bg-black/50' placeholder="Rechercher des films" value={searchInput} onChange={handleSearchInput} />
-          <Button className='h-10'>
+          <Button aria-label='search' className='h-10'>
             <SearchIcon />
           </Button>
         </div>
@@ -94,6 +95,12 @@ function HomeComponent() {
           {dates}
         </div>
       </div>
+      {/* <Separator />
+      <div className='px-4 p-2 container'>
+        {isSuccess &&
+          <Pagination search={search} maxPage={data.maxPage}/>
+        }
+      </div> */}
     </header>
     <main className="flex min-h-screen flex-col items-center text-white">
       <div className="container flex flex-col gap-12 px-4 pt-32 pb-12">
@@ -109,22 +116,7 @@ function HomeComponent() {
           }
         </div>
         {isSuccess &&
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious to="/" search={{ ...search, page: search.page === undefined ? 0 : search.page - 1 }} />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink to='/' isActive={search.page === 0 || search.page === undefined} search={{ ...search, page: 0 }}>1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink to='/' isActive={search.page === data.maxPage} search={{ ...search, page: data.maxPage }}>{data.maxPage}</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext to="/" search={{ ...search, page: search.page === undefined ? 1 : search.page + 1 }} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <Pagination search={search} maxPage={data.maxPage}/>
         }
       </div>
     </main>

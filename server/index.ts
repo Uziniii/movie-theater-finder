@@ -7,6 +7,7 @@ import { Movies, MOVIES_PER_PAGE } from "./db/models/Movies.ts";
 import { Schedules } from "./db/models/Schedules.ts";
 import { getMoviesData } from "@/fetch-allocine.ts";
 import cinemas from "@/../prisma/cinemas.json"
+import { compression } from 'elysia-compress'
 
 const { values } = parseArgs({
   args: Bun.argv,
@@ -89,13 +90,27 @@ if (values.fetch) {
 }
 
 const app = new Elysia()
+  .use(compression({
+    TTL: 3000,
+  }))
   .use(staticPlugin({
-    assets: "./dist/assets",
-    prefix: "/assets"
+    assets: "./server/public/dist/assets",
+    prefix: "/assets",
+    indexHTML: true,
+    maxAge: 86400,
+    noCache: false,
+    headers: {
+      "Cache-Control": "max-age=86400, public"
+    }
   }))
   .decorate("movies", new Movies())
   .decorate("schedules", new Schedules())
-  .get("/", () => Bun.file("./dist/index.html"))
+  .get("/", () => Bun.file("./server/public/dist/index.html"), {
+    // headers: {
+      
+    // }
+  })
+  .get("/robots.txt", () => Bun.file("./server/public/robots.txt"))
   .group("/api", (app) =>
     app
       .get("/movies", async ({ movies, schedules, query }) => {
@@ -111,6 +126,7 @@ const app = new Elysia()
         if (moviesToday.length === 0) {
           return {
             maxPage: 0,
+            page,
             movies: [],
             schedules: []
           }
@@ -121,6 +137,7 @@ const app = new Elysia()
         if (moviesSchedules.length === 0) {
           return {
             maxPage: 0,
+            page,
             movies: [],
             schedules: []
           }
@@ -128,6 +145,7 @@ const app = new Elysia()
 
         return {
           maxPage,
+          page,
           movies: moviesToday,
           schedules: moviesSchedules
         }

@@ -65,6 +65,14 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
       if (m) {
         movies.set(movie.title, { ...m, schedule })
       } else {
+        let poster = movie.poster !== null ? movie.poster.url : ""
+
+        if (poster !== "") {
+          let splitedPoster = poster.split("/")
+          splitedPoster[3] = "replace/img"
+          poster = splitedPoster.join("/")
+        }
+
         movies.set(movie.title, {
           title: movie.title,
           cast: movie.cast.nodes.map(x => {
@@ -87,7 +95,7 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
             })
             .reduce((x, acc) => x + acc),
           genres: movie.genres.map(x => x.translate),
-          poster: movie.poster !== null ? movie.poster.url : "",
+          poster,
           release: new Date(movie.releases.at(-1)?.releaseDate?.date ?? Date.now()),
           synopsis: movie.synopsis_json?.body?.[0]?.children?.[0]?.text ?? "",
           schedule,

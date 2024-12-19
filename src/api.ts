@@ -68,7 +68,6 @@ function customSort(schedules: ScheduleFromServer[]): Schedule[] {
   for (const type of order) {
     result.push(...groups[type]);
   }
-  console.log(result);
   
   return result.map(x => ({
     ...x,

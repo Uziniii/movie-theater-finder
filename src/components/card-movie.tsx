@@ -22,11 +22,26 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
     <div className="p-4 flex max-md:flex-col">
       <div className="md:w-1/3">
         <img
-          src={movie.poster === "" ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png" : movie.poster.replace("r_200_283", "r_800_1132")}
+          src={movie.poster === "" ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png" : movie.poster.replace("replace", "r_800_1132")}
+          srcSet={
+          movie.poster === "" 
+            ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png"
+            : `
+              ${movie.poster.replace("replace", "r_200_283")} 200w,
+              ${movie.poster.replace("replace", "r_400_566")} 400w,
+              ${movie.poster.replace("replace", "r_800_1132")} 800w,
+              ${movie.poster.replace("replace", "r_1600_2264")} 1600w
+            `.trim()
+          }
+          sizes="(max-width: 480px) 200px, 
+              (max-width: 768px) 400px, 
+              (max-width: 1200px) 800px, 
+              1600px"
           alt={`${movie.title} Poster`}
           width={800}
           height={1132}
           className="w-full h-auto object-cover rounded-md"
+          loading="lazy"
         />
       </div>
       <div className="pt-6 md:p-6 md:pt-0 md:w-2/3">
@@ -44,7 +59,7 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
           </div>
           {movie.cast !== "" &&
             <div className="mb-4">
-              <h3 className="font-semibold mb-1">Acteurs</h3>
+              <h2 className="font-semibold mb-1">Acteurs</h2>
               <div className="flex flex-wrap gap-2 mb-4">
                 {movie.cast.split(",").map((m, i) => (
                   <Badge key={i}>{m}</Badge>

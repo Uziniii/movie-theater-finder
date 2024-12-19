@@ -22,8 +22,24 @@ export class Schedules {
         s.movieId IN (${Prisma.join(movies.map(x => x.id))}) AND 
         (s.showTime >= ${date.getTime()} AND s.showTime <= ${dateEnd.getTime()})
       GROUP BY s.movieId, s.version, c.id
-      
     `
+
+    // const schedules = await client.$queryRaw<Schedule[]>`
+    //   SELECT
+    //     c.name as cinema,
+    //     GROUP_CONCAT(s.showTime ORDER BY s.showTime) as showTimes,
+    //     s.version,
+    //     s.movieId
+    //   FROM schedules s
+    //   LEFT JOIN cinemas c
+    //   ON c.id = s.cinemaId
+    //   WHERE
+    //     s.movieId IN (2101) AND 
+    //     (s.showTime >= ${date.getTime()} AND s.showTime <= ${dateEnd.getTime()})
+    //   GROUP BY s.movieId, s.version, c.id
+    // `
+    // console.log(schedules);
+    
 
     return schedules
   }

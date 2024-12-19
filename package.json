@@ -12,14 +12,15 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
-    "vite": "^6.0.2"
+    "vite": "^6.0.2",
+    "vite-bundle-analyzer": "^0.15.2"
   },
   "peerDependencies": {
     "typescript": "^5.6.3"
   },
   "scripts": {
     "server:dev": "bun --watch server/index.ts",
-    "server:build": "bun build server/index.ts --target bun --outdir ./server-dist",
+    "server:build": "bun build server/index.ts --sourcemap --target bun --outdir ./server-dist",
     "server:start": "NODE_ENV=production bun server-dist/index.js",
     "vite:dev": "vite --port=3001",
     "vite:build": "vite build",
@@ -43,6 +44,7 @@
     "clsx": "^2.1.1",
     "croner": "^9.0.0",
     "elysia": "^1.1.25",
+    "elysia-compress": "^1.2.1",
     "lucide-react": "^0.456.0",
     "prisma": "^6.0.1",
     "react": "^18.3.1",
