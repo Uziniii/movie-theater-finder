@@ -18,15 +18,18 @@ type Props = {
 }
 
 export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
+  let hours = Math.floor(movie.duration / 60);
+  let minutes = movie.duration - (hours * 60);
+
   return <Card className="overflow-hidden flex flex-col">
     <div className="p-4 flex max-md:flex-col">
       <div className="md:w-1/3">
         <img
           src={movie.poster === "" ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png" : movie.poster.replace("replace", "r_800_1132")}
           srcSet={
-          movie.poster === "" 
-            ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png"
-            : `
+            movie.poster === ""
+              ? "https://upload.wikimedia.org/wikipedia/commons/5/59/Empty.png"
+              : `
               ${movie.poster.replace("replace", "r_200_283")} 200w,
               ${movie.poster.replace("replace", "r_400_566")} 400w,
               ${movie.poster.replace("replace", "r_800_1132")} 800w,
@@ -53,6 +56,7 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
           <div className="flex flex-wrap gap-2 mb-4">
             {movie.director && <Badge>{movie.director}</Badge>}
             <Badge>{Intl.DateTimeFormat("fr-FR").format(new Date(movie.release))}</Badge>
+            <Badge>{hours !== 0 && `${hours}h `}{minutes}m</Badge>
             {movie.genres.split(",").map((m, i) => (
               <Badge variant={"secondary"} key={i}>{m}</Badge>
             ))}
