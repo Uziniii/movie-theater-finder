@@ -7,6 +7,7 @@ export type Cinema = {
 export type Movie = {
     id: number;
     title: string;
+    originalTitle?: string;
     director: string;
     cast: string[];
     duration: number;

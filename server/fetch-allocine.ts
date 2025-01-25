@@ -39,16 +39,16 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
 
     if (requestNumber % 200 === 0) {
       await delay(10000)
-      console.log("..."); 
+      console.log("...");
     }
 
     for (let i = 0; i < result.results.length; i++) {
       const { movie, showtimes } = result.results[i];
-      
+
       if (!movie) break
-      
+
       let m = movies.get(movie.title)
-      
+
       let schedule: Schedule = m
         ? m.schedule[cinema.id]
           ? m.schedule
@@ -61,7 +61,7 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
         ...showtimes.dubbed.map(x => [new Date(x.startsAt), "dub"])
       ] as [Date, "vo" | "vf" | "dub"][]
       schedule[cinema.id] = [...schedule[cinema.id], ...showtimesExtracted]
-      
+
       if (m) {
         movies.set(movie.title, { ...m, schedule })
       } else {
@@ -69,12 +69,13 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
 
         if (poster !== "") {
           let splitedPoster = poster.split("/")
-          splitedPoster[3] = "replace/img"
+          splitedPoster[3] = `replace/${splitedPoster[3]}`
           poster = splitedPoster.join("/")
         }
 
         movies.set(movie.title, {
           title: movie.title,
+          originalTitle: movie.title === movie.originalTitle ? undefined : movie.originalTitle,
           cast: movie.cast.nodes.map(x => {
             if (x.actor) {
               return `${x.actor.firstName} ${x.actor.lastName}`
@@ -111,11 +112,21 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
   for (let i = 0; i < 7; i++) {
     await Promise.all(
       cinemas.map(x => new Promise(async res => {
-        let date = new Date(Date.now())
+        async function recursiveFetch() {
+          let date = new Date(Date.now())
 
-        date.setDate(date.getDate() + i)
+          date.setDate(date.getDate() + i)
 
-        res(await getMovies(x, date))
+          try {
+            res(await getMovies(x, date))
+          } catch (e) {
+            console.log(e);
+
+            await recursiveFetch()
+          }
+        }
+
+        await recursiveFetch()
       }))
     )
   }

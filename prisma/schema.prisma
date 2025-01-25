@@ -16,16 +16,17 @@ model cinemas {
 }
 
 model movies {
-  id        Int         @id @default(autoincrement())
-  title     String      @unique(map: "sqlite_autoindex_movies_1")
-  director  String
-  cast      String?
-  duration  Int?
-  poster    String
-  release   DateTime
-  synopsis  String?
-  genres    String
-  schedules schedules[]
+  id            Int         @id @default(autoincrement())
+  title         String      @unique(map: "sqlite_autoindex_movies_1")
+  originalTitle String?     @unique(map: "sqlite_autoindex_movies_2")
+  director      String
+  cast          String?
+  duration      Int?
+  poster        String
+  release       DateTime
+  synopsis      String?
+  genres        String
+  schedules     schedules[]
 }
 
 model schedules {
