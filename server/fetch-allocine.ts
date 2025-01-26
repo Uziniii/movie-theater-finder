@@ -37,11 +37,6 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
 
     requestNumber++;
 
-    if (requestNumber % 200 === 0) {
-      await delay(10000)
-      console.log("...");
-    }
-
     for (let i = 0; i < result.results.length; i++) {
       const { movie, showtimes } = result.results[i];
 
@@ -121,7 +116,7 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
             res(await getMovies(x, date))
           } catch (e) {
             console.log(e);
-
+            await delay(1000)
             await recursiveFetch()
           }
         }

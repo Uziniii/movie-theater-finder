@@ -38,7 +38,7 @@ const job = new Cron("@daily", async () => {
     await tx.movies.deleteMany()
 
     for (let i = 0; i < movies.length; i++) {
-      const { title, cast, director, duration, genres, poster, release, schedule, synopsis } = movies[i];
+      const { title, originalTitle, cast, director, duration, genres, poster, release, schedule, synopsis } = movies[i];
 
       const finalSchedule = []
       const keys = Object.keys(schedule)
@@ -58,6 +58,7 @@ const job = new Cron("@daily", async () => {
       await tx.movies.create({
         data: {
           title,
+          originalTitle,
           director,
           cast: cast.join(","),
           poster,
