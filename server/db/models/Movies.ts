@@ -24,8 +24,6 @@ export class Movies {
         }
       },
     })
-    console.log(count);
-
 
     return count
   }
@@ -46,9 +44,18 @@ export class Movies {
             }
           }
         },
-        title: {
-          contains: search
-        }
+        OR: search ? [
+          {
+            originalTitle: {
+              contains: `%${search}%`,
+            },
+          },
+          {
+            title: {
+              contains: `%${search}%`,
+            }
+          }
+        ] : undefined
       },
       include: {
         schedules: false
