@@ -11,7 +11,12 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, number]> {
   let requestNumber = 0;
+  let total = 0;
   const movies: MoviesMap = new Map();
+
+  let interval = setInterval(() => {
+    process.stdout.write(`\r[${requestNumber}/${total}]`)
+  }, 1)
 
   async function getMovies(cinema: Cinema, date: Date, page: number = 1) {
     let formatedDate = new Intl.DateTimeFormat('en-CA').format(date)
@@ -34,6 +39,10 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
       "mode": "cors",
       "credentials": "include"
     })).json() as AllocineMoviesResponse;
+
+    if (page === 1) {
+      total += result.pagination.totalPages
+    }
 
     requestNumber++;
 
@@ -106,7 +115,9 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
 
   for (let i = 0; i < 7; i++) {
     await Promise.all(
-      cinemas.map(x => new Promise(async res => {
+      cinemas.map(x => new Promise(async (res, rej) => {
+        let errorCount = 0;
+
         async function recursiveFetch() {
           let date = new Date(Date.now())
 
@@ -116,6 +127,12 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
             res(await getMovies(x, date))
           } catch (e) {
             console.log(e);
+            errorCount++
+
+            if (errorCount >= 10) {
+              return rej("More than 10 errors")
+            }
+
             await delay(1000)
             await recursiveFetch()
           }
@@ -125,6 +142,8 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
       }))
     )
   }
+
+  clearInterval(interval)
 
   return [movies, requestNumber]
 }

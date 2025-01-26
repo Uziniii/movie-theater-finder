@@ -118,7 +118,7 @@ const app = new Elysia()
       .get("/movies", async ({ movies, schedules, query }) => {
         const date = new Date(query.date ?? Date.now())
         const maxPage = Math.floor(await movies.getCount(date, query.search) / MOVIES_PER_PAGE)
-        console.log(maxPage)
+
         let page = query.page ?? 0
 
         if (page > maxPage) page = maxPage
