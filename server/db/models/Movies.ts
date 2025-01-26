@@ -61,9 +61,6 @@ export class Movies {
       take: MOVIES_PER_PAGE,
       skip: page * MOVIES_PER_PAGE
     })
-    // console.dir(m, {
-    //   depth: Infinity
-    // });
 
     return m
   }

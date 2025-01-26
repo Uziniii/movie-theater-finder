@@ -20,9 +20,10 @@ const { values } = parseArgs({
   allowPositionals: true,
 });
 
-await client.$executeRawUnsafe(`
-  INSERT OR IGNORE INTO cinemas (name, url) VALUES ${cinemas.map(x => `("${x.name}", "${x.url}")`).join(",")}
-`);
+await client.cinemas.createMany({
+  data: cinemas,
+  skipDuplicates: true
+})
 
 const job = new Cron("@daily", async () => {
   let startTime = performance.now()
@@ -107,7 +108,7 @@ const app = new Elysia()
   .decorate("schedules", new Schedules())
   .get("/", () => Bun.file("./server/public/dist/index.html"), {
     // headers: {
-      
+
     // }
   })
   .get("/robots.txt", () => Bun.file("./server/public/robots.txt"))

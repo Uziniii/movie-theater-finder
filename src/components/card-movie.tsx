@@ -84,7 +84,7 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
                 <div className="flex flex-wrap gap-2">
                   {s.showTimes.map((showtime, i) => (
                     <Badge key={i} variant="default">
-                      {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(+showtime))}
+                      {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
                     </Badge>
                   ))}
                 </div>
@@ -94,5 +94,5 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
         </Accordion>
       </ScrollArea>
     </div>
-  </Card>
+  </Card >
 })

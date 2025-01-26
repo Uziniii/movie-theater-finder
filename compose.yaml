@@ -1,0 +1,64 @@
+services:
+  app:
+    image: oven/bun:latest
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /app
+          ignore:
+            - node_modules/
+    entrypoint: ["/bin/sh", "/app/scripts/server-entrypoint.sh"]
+    build:
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      FETCH: false
+    working_dir: /app
+    networks:
+      - internet
+      - all
+
+  frontend:
+    image: oven/bun:latest
+    ports:
+      - "3001:3001"
+    entrypoint: ["/bin/sh", "/app/scripts/frontend-entrypoint.sh"]
+    build:
+      dockerfile: Dockerfile
+    working_dir: /app
+    networks:
+      - all
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /app
+          ignore:
+            - node_modules/
+
+  db:
+    image: mysql:9.2
+    environment:
+      MYSQL_ROOT_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
+      MYSQL_USER: uzini
+      MYSQL_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - all
+
+volumes:
+  db_data:
+  bin:
+
+networks:
+  all:
+    driver: bridge
+  internet:
+    external: true

@@ -45,14 +45,14 @@ function customSort(schedules: ScheduleFromServer[]): Schedule[] {
 
   for (let i = 0; i < schedules.length; i++) {
     const item = schedules[i];
-    
+
     if (groups[item.version]) {
       groups[item.version].push(item as any as Schedule);
     }
   }
-  
+
   const result = [];
-  
+
   if (groups.vo.length && groups.dub.length && groups.vf.length) {
     // Case with "vo", "dub", and "vf"
     if (groups.vo.length) result.push(...groups.vo.splice(0, 2));
@@ -63,12 +63,12 @@ function customSort(schedules: ScheduleFromServer[]): Schedule[] {
     if (groups.vo.length) result.push(...groups.vo.splice(0, 3));
     if (groups.dub.length) result.push(...groups.dub.splice(0, 3));
   }
-  
+
   // Add the remaining items in the specified order
   for (const type of order) {
     result.push(...groups[type]);
   }
-  
+
   return result.map(x => ({
     ...x,
     showTimes: (x.showTimes as any).split(",")
@@ -83,17 +83,17 @@ export async function fetchMovies({ queryKey }: { queryKey: [string, string | un
       search: queryKey[3]
     })
   )
-  
+
   if (!response.ok) {
     throw new Error('Network response was not ok')
   }
-  
+
   let data = await response.json() as any as {
     maxPage: number
     movies: MovieFromServer[]
     schedules: ScheduleFromServer[]
   }
-  
+
   let movies = data.movies.map(m => {
     return {
       ...m,

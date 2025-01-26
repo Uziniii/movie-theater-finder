@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -24,7 +24,7 @@ model movies {
   duration      Int?
   poster        String
   release       DateTime
-  synopsis      String?
+  synopsis      String?     @db.Text
   genres        String
   schedules     schedules[]
 }
