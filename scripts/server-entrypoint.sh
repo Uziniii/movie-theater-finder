@@ -21,5 +21,10 @@ else
   bun vite:build
   bun server:build
   # Start the production server
-  bun start
+
+  if [ "$FETCH" = "true" ]; then
+    bun server:start --fetch
+  else
+    bun server:start
+  fi
 fi

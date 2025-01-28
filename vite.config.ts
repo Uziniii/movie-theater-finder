@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     TanStackRouterVite({}),
     react(),
-    analyzer()
+    // analyzer()
   ],
   server: {
     proxy: {
