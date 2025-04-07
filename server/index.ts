@@ -91,28 +91,33 @@ if (values.fetch) {
   job.trigger()
 }
 
+const dir = Bun.env.NODE_ENV === "production" ? "server-dist" : "server"
+console.log(dir);
+
+
 const app = new Elysia()
   .use(compression({
     TTL: 3000,
   }))
-  .use(staticPlugin({
-    assets: "./server/public/dist/assets",
-    prefix: "/assets",
-    indexHTML: true,
-    maxAge: 86400,
-    noCache: false,
-    headers: {
-      "Cache-Control": "max-age=86400, public"
-    }
-  }))
-  .decorate("movies", new Movies())
-  .decorate("schedules", new Schedules())
-  .get("/", () => Bun.file("./server/public/dist/index.html"), {
+  .get("/", () => Bun.file(`./${dir}/public/dist/index.html`), {
     // headers: {
 
     // }
   })
-  .get("/robots.txt", () => Bun.file("./server/public/robots.txt"))
+  .get('/assets/*', ({ params }) => Bun.file(`./${dir}/public/dist/assets/${params['*']}`))
+  // .use(staticPlugin({
+  //   assets: `./${dir}/public/dist/assets`,
+  //   prefix: "/assets",
+  //   indexHTML: true,
+  //   maxAge: 86400,
+  //   noCache: false,
+  //   headers: {
+  //     "Cache-Control": "max-age=86400, public"
+  //   }
+  // }))
+  .decorate("movies", new Movies())
+  .decorate("schedules", new Schedules())
+  .get("/robots.txt", () => Bun.file(`./${dir}/public/robots.txt`))
   .group("/api", (app) =>
     app
       .get("/movies", async ({ movies, schedules, query }) => {

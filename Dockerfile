@@ -1,5 +1,5 @@
 # Run as a non-privileged user
-FROM bun:latest
+FROM oven/bun:latest
 RUN id -u app || useradd -ms /bin/sh -u 1001 app
 USER app
 

@@ -14,8 +14,8 @@ services:
     build:
       dockerfile: Dockerfile
     environment:
-      NODE_ENV: development
-      FETCH: false
+      NODE_ENV: ${NODE_ENV}
+      FETCH: ${FETCH}
     working_dir: /app
     networks:
       - internet
