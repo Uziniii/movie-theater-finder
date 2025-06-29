@@ -60,9 +60,9 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
         : { [cinema.id]: [] }
 
       let showtimesExtracted = [
-        ...showtimes.local.map(x => [new Date(x.startsAt), "vf"]),
-        ...showtimes.original.map(x => [new Date(x.startsAt), "vo"]),
-        ...showtimes.dubbed.map(x => [new Date(x.startsAt), "dub"])
+        ...showtimes.local.map(x => [new Date(x.startsAt + "+00:00"), "vf"]),
+        ...showtimes.original.map(x => [new Date(x.startsAt + "+00:00"), "vo"]),
+        ...showtimes.dubbed.map(x => [new Date(x.startsAt + "+00:00"), "dub"])
       ] as [Date, "vo" | "vf" | "dub"][]
       schedule[cinema.id] = [...schedule[cinema.id], ...showtimesExtracted]
 

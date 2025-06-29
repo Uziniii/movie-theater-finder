@@ -8,6 +8,8 @@ import { Schedules } from "./db/models/Schedules.ts";
 import { getMoviesData } from "@/fetch-allocine.ts";
 import cinemas from "@/../prisma/cinemas.json"
 import { compression } from 'elysia-compress'
+import { join } from "path"
+import { existsSync } from "fs"
 
 const { values } = parseArgs({
   args: Bun.argv,
@@ -91,33 +93,46 @@ if (values.fetch) {
   job.trigger()
 }
 
-const dir = Bun.env.NODE_ENV === "production" ? "server-dist" : "server"
-console.log(dir);
-
+const path = Bun.env.NODE_ENV === "production" ? "/app/server-dist" : "./server"
 
 const app = new Elysia()
   .use(compression({
     TTL: 3000,
   }))
-  .get("/", () => Bun.file(`./${dir}/public/dist/index.html`), {
-    // headers: {
-
-    // }
-  })
-  .get('/assets/*', ({ params }) => Bun.file(`./${dir}/public/dist/assets/${params['*']}`))
   // .use(staticPlugin({
-  //   assets: `./${dir}/public/dist/assets`,
-  //   prefix: "/assets",
-  //   indexHTML: true,
+  //   assets: `./${path}/public/dist/`,
+  //   prefix: "/",resolve
+  //   // indexHTML: true,
   //   maxAge: 86400,
   //   noCache: false,
   //   headers: {
   //     "Cache-Control": "max-age=86400, public"
   //   }
   // }))
+  .get("/assets/*", async ({ params }) => {
+    // console.log(params["*"])
+    const filePath = join(path, "public", "dist", "assets", params["*"]);
+    // console.log(filePath)
+
+    if (!existsSync(filePath)) {
+      return new Response("File not found", { status: 404 });
+    }
+
+    const file = Bun.file(filePath);
+    return new Response(file, {
+      headers: {
+        "Content-Type": file.type || "application/octet-stream"
+      }
+    });
+  })
   .decorate("movies", new Movies())
   .decorate("schedules", new Schedules())
-  .get("/robots.txt", () => Bun.file(`./${dir}/public/robots.txt`))
+  .get("/", () => Bun.file(`${path}/public/dist/index.html`), {
+    // headers: {
+
+    // }
+  })
+  .get("/robots.txt", () => Bun.file(`${path}/public/robots.txt`))
   .group("/api", (app) =>
     app
       .get("/movies", async ({ movies, schedules, query }) => {
