@@ -4,7 +4,8 @@ FROM oven/bun:latest
 USER root
 RUN apt-get update -y && apt-get install -y openssl
 
-RUN id -u app &>/dev/null || useradd -ms /bin/sh -u 1001 app
+# RUN id -u app &>/dev/null || useradd -ms /bin/sh -u 1001 app
+RUN useradd -ms /bin/sh -u 1001 app
 
 # Install dependencies
 WORKDIR /app

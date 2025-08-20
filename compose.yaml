@@ -1,6 +1,5 @@
 services:
   app:
-    image: oven/bun:latest
     ports:
       - "3000:3000"
     develop:
@@ -28,7 +27,6 @@ services:
       - all
 
   frontend:
-    image: oven/bun:latest
     ports:
       - "3001:3001"
     entrypoint: ["/bin/sh", "/app/scripts/frontend-entrypoint.sh"]
