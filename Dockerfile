@@ -9,7 +9,7 @@ RUN useradd -ms /bin/sh -u 1001 app
 
 # Install dependencies
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json bun.lockb ./
 RUN bun install
 
 # Copy source files into application directory
