@@ -22,9 +22,6 @@ services:
       NODE_ENV: ${NODE_ENV}
       FETCH: ${FETCH}
     working_dir: /app
-    networks:
-      - public
-      - private
 
   frontend:
     ports:
@@ -33,9 +30,6 @@ services:
     build:
       dockerfile: Dockerfile
     working_dir: /app
-    networks:
-      - public
-      - private
     develop:
       watch:
         - action: sync
@@ -52,17 +46,11 @@ services:
       MYSQL_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
       MYSQL_DATABASE: mydatabase
     ports:
-      - "3306:3306"
+      - "3306"
     volumes:
       - db_data:/var/lib/postgresql/data
-    networks:
-      - private
 
 volumes:
   db_data:
   bin:
   app-notused:
-
-networks:
-  public:
-  private:
