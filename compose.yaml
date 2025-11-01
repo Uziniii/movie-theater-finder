@@ -45,6 +45,7 @@ services:
       MYSQL_USER: uzini
       MYSQL_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
       MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_HOST: '%'
     ports:
       - "3306"
     volumes:
