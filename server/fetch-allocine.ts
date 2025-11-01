@@ -2,7 +2,7 @@ import type { AllocineMoviesResponse } from "@/types/allocine-movies-response";
 import type { Cinema, Movie } from "@/types/schema";
 
 type Schedule = {
-  [cinema: string]: [Date, "vo" | "vf" | "dub"][]
+  [cinema: string]: [Date, `${"vo" | "vf"}${"_sme" | "_dub" | ""}`][]
 }
 
 type MoviesMap = Map<string, Omit<Movie, "id"> & { schedule: Schedule }>
@@ -60,10 +60,13 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
         : { [cinema.id]: [] }
 
       let showtimesExtracted = [
-        ...showtimes.local.map(x => [new Date(x.startsAt + "+00:00"), "vf"]),
+        ...showtimes.multiple.map(x => [new Date(x.startsAt + "+00:00"), "vf"]),
+        ...showtimes.multiple_st.map(x => [new Date(x.startsAt + "+00:00"), "vf_dub"]),
+        ...showtimes.multiple_st_sme.map(x => [new Date(x.startsAt + "+00:00"), "vf_sme"]),
         ...showtimes.original.map(x => [new Date(x.startsAt + "+00:00"), "vo"]),
-        ...showtimes.dubbed.map(x => [new Date(x.startsAt + "+00:00"), "dub"])
-      ] as [Date, "vo" | "vf" | "dub"][]
+        ...showtimes.original_st.map(x => [new Date(x.startsAt + "+00:00"), "vo_dub"]),
+        ...showtimes.original_st_sme.map(x => [new Date(x.startsAt + "+00:00"), "vo_sme"]),
+      ] as [Date, `${"vo" | "vf"}${"_sme" | "_dub" | ""}`][]
       schedule[cinema.id] = [...schedule[cinema.id], ...showtimesExtracted]
 
       if (m) {

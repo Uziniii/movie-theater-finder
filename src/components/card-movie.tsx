@@ -8,8 +8,11 @@ import { ScrollArea } from "./ui/scroll-area"
 
 const versionToText = {
   vo: "- VO",
+  vo_dub: "- VO Sous-titré",
+  vo_sme: "- VO SME",
   vf: "- VF",
-  dub: "- Sous-titré",
+  vf_dub: "- VF Sous-titré",
+  vf_sme: "- VF SME",
   null: ""
 }
 
