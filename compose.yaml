@@ -47,7 +47,7 @@ services:
       MYSQL_DATABASE: mydatabase
       MYSQL_ROOT_HOST: '%'
     ports:
-      - "3306"
+      - "3336:3306"
     volumes:
       - db_data:/var/lib/postgresql/data
 
