@@ -23,8 +23,8 @@ services:
       FETCH: ${FETCH}
     working_dir: /app
     networks:
-      - internet
-      - all
+      - public
+      - private
 
   frontend:
     ports:
@@ -34,7 +34,8 @@ services:
       dockerfile: Dockerfile
     working_dir: /app
     networks:
-      - all
+      - public
+      - private
     develop:
       watch:
         - action: sync
@@ -55,7 +56,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
-      - all
+      - private
 
 volumes:
   db_data:
@@ -63,7 +64,5 @@ volumes:
   app-notused:
 
 networks:
-  all:
-    driver: bridge
-  internet:
-    external: true
+  public:
+  private:
