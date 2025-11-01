@@ -76,6 +76,8 @@ const job = new Cron("@daily", async () => {
         }
       })
     }
+  }, {
+    timeout: 60000 * 2
   })
 
   let [cinemasCount, moviesCount, schedulesCount] = [await client.cinemas.count(), await client.movies.count(), await client.schedules.count()]
