@@ -3,9 +3,6 @@ services:
     ports:
       - "3000:3000"
     entrypoint: ["/bin/sh", "/app/scripts/server-entrypoint.sh"]
-    volumes:
-      - ./server:/app/server:ro
-      - ./src:/app/src:ro
     build:
       dockerfile: Dockerfile
     depends_on:
