@@ -17,9 +17,6 @@ if [ "$NODE_ENV" = "development" ]; then
   fi
 else
   echo "Starting Bun in production mode..."
-  # Build the project
-  bunx prisma generate
-  # Start the production server
 
   if [ "$FETCH" = "true" ]; then
     bun server:start --fetch
