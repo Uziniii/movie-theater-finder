@@ -23,7 +23,7 @@
     "server:build": "bun build server/index.ts --sourcemap --target bun --outdir ./server-dist",
     "server:start": "NODE_ENV=production bun server-dist/index.js",
     "vite:dev": "vite --port=3001",
-    "vite:build": "vite build --outDir server-dist/public/dist --verbose",
+    "vite:build": "vite build --outDir server-dist/public/dist",
     "vite:build:dev": "vite build && cp -r server-dist/public/dist server/public/dist",
     "vite:serve": "vite preview",
     "generate:cinemas": "bun run server/generate-cinemas-file.ts"
