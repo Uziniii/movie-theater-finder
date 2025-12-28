@@ -12,7 +12,7 @@ services:
       - db
     environment:
       NODE_ENV: ${NODE_ENV:-production}
-      FETCH: ${FETCH:-false}
+      FETCH: ${FETCH:-true}
       DATABASE_URL: ${DATABASE_URL}
     working_dir: /app
     labels:
