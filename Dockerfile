@@ -25,5 +25,6 @@ RUN bunx prisma generate
 
 # Fix ownership of build outputs to app user
 RUN chown -R app:app /app/server-dist
+RUN chown -R app:app /app/node_modules/.prisma
 
 USER app
