@@ -13,9 +13,6 @@ services:
     volumes:
       - ./server:/app/server:ro
       - ./src:/app/src:ro
-      - ./package.json:/app/package.json
-      - ./package-lock.json:/app/package-lock.json
-      - app-notused:/opt/app/node_modules
     build:
       dockerfile: Dockerfile
     environment:
@@ -49,9 +46,7 @@ services:
     ports:
       - "3336:3306"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
 
 volumes:
   db_data:
-  bin:
-  app-notused:
