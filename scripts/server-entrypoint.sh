@@ -3,12 +3,11 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-bunx prisma db push
-bunx prisma generate
 
 # Check the NODE_ENV environment variable
 if [ "$NODE_ENV" = "development" ]; then
   echo "Starting Bun in development mode..."
+  bunx prisma generate
 
   # Run the development server
   if [ "$FETCH" = "true" ]; then
@@ -18,7 +17,10 @@ if [ "$NODE_ENV" = "development" ]; then
   fi
 else
   echo "Starting Bun in production mode..."
+  bunx prisma migrate deploy
+  bunx prisma generate
 
+  # Run the production server
   if [ "$FETCH" = "true" ]; then
     bun server:start --fetch
   else
