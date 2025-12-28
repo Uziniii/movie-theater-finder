@@ -16,8 +16,6 @@ services:
       FETCH: ${FETCH}
       DATABASE_URL: ${DATABASE_URL}
     working_dir: /app
-    networks:
-      - proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`movies.rpi.lan`)"
@@ -42,7 +40,3 @@ volumes:
   db_data:
   bin:
   app-notused:
-
-networks:
-  proxy:
-    external: true
