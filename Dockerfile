@@ -14,5 +14,9 @@ RUN bun install
 
 # Copy source files into application directory
 COPY --chown=app:app . /app
+
+# Fix ownership of node_modules to app user
+RUN chown -R app:app /app/node_modules
+
 USER app
 

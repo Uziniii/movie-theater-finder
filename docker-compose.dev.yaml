@@ -15,9 +15,12 @@ services:
       - ./src:/app/src:ro
     build:
       dockerfile: Dockerfile
+    depends_on:
+      - db
     environment:
       NODE_ENV: ${NODE_ENV}
       FETCH: ${FETCH}
+      DATABASE_URL: ${DATABASE_URL}
     working_dir: /app
 
   frontend:
