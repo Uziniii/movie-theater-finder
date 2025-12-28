@@ -3,7 +3,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-bunx prisma db push
+bunx prisma db migrate deploy && bunx prisma generate
 
 # Check the NODE_ENV environment variable
 if [ "$NODE_ENV" = "development" ]; then
