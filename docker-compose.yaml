@@ -1,0 +1,47 @@
+services:
+  app:
+    ports:
+      - "3000:3000"
+    entrypoint: ["/bin/sh", "/app/scripts/server-entrypoint.sh"]
+    volumes:
+      - ./server:/app/server:ro
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - app-notused:/opt/app/node_modules
+    build:
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      FETCH: ${FETCH}
+    working_dir: /app
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`movies.rpi.lan`)"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.tls=true"
+      - "coolify.managed=true"
+
+  db:
+    image: mysql:9.2
+    environment:
+      MYSQL_ROOT_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
+      MYSQL_USER: uzini
+      MYSQL_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
+      MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3336:3306"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+  bin:
+  app-notused:
+
+networks:
+  proxy:
+    external: true

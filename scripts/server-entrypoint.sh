@@ -20,6 +20,7 @@ else
   # Build the project
   bun vite:build
   bun server:build
+  bunx prisma generate
   # Start the production server
 
   if [ "$FETCH" = "true" ]; then
