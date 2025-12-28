@@ -18,8 +18,6 @@ if [ "$NODE_ENV" = "development" ]; then
 else
   echo "Starting Bun in production mode..."
   # Build the project
-  bun server:build
-  bun vite:build
   bunx prisma generate
   # Start the production server
 
