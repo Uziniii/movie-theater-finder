@@ -1,28 +1,79 @@
 import type { AllocineMoviesResponse } from "@/types/allocine-movies-response";
-import type { Cinema, Movie } from "@/types/schema";
 
-type Schedule = {
-  [cinema: string]: [Date, `${"vo" | "vf"}${"_sme" | "_dub" | ""}`][]
+type Cinema = {
+  id: number
+  url: string
 }
 
-type MoviesMap = Map<string, Omit<Movie, "id"> & { schedule: Schedule }>
+type ScheduleItem = {
+  allocineInternalId: bigint
+  showTime: Date
+  version: `${"vo" | "vf"}${"_sme" | "_dub" | ""}`
+}
+
+type Schedule = {
+  [cinema: string]: ScheduleItem[]
+}
+
+type MoviesMap = Map<
+  number,
+  {
+    allocineId: string
+    allocineInternalId: bigint
+    title: string
+    originalTitle?: string
+    director: string
+    cast: string[]
+    duration: number
+    poster: string
+    release: Date
+    synopsis: string
+    genres: string[]
+    allocineRaw: unknown
+    schedule: Schedule
+  }
+>
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, number]> {
+export async function getMoviesData(
+  cinemas: Cinema[],
+  options?: {
+    maxRequests?: number
+  }
+): Promise<[MoviesMap, number]> {
   let requestNumber = 0;
   let total = 0;
   const movies: MoviesMap = new Map();
+  let stop = false
+
+  const tryStartRequest = () => {
+    if (stop) return false
+
+    if (options?.maxRequests !== undefined && requestNumber >= options.maxRequests) {
+      stop = true
+      return false
+    }
+
+    requestNumber++
+    return true
+  }
 
   let interval = setInterval(() => {
     process.stdout.write(`\r[${requestNumber}/${total}]`)
   }, 1)
 
   async function getMovies(cinema: Cinema, date: Date, page: number = 1) {
+    if (stop) return
+
     let formatedDate = new Intl.DateTimeFormat('en-CA').format(date)
     let cinemaCode = cinema.url.split("=")[1].replace(".html", "")
 
     const pageUrl = page === 1 ? "" : `p-${page}/`
+
+    if (!tryStartRequest()) {
+      return
+    }
 
     let result = await (await fetch(`https://www.allocine.fr/_/showtimes/theater-${cinemaCode}/d-${formatedDate}/${pageUrl}`, {
       "headers": {
@@ -44,14 +95,12 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
       total += result.pagination.totalPages
     }
 
-    requestNumber++;
-
     for (let i = 0; i < result.results.length; i++) {
       const { movie, showtimes } = result.results[i];
 
       if (!movie) break
 
-      let m = movies.get(movie.title)
+      let m = movies.get(movie.internalId)
 
       let schedule: Schedule = m
         ? m.schedule[cinema.id]
@@ -59,18 +108,18 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
           : { ...m.schedule, [cinema.id]: [] }
         : { [cinema.id]: [] }
 
-      let showtimesExtracted = [
-        ...showtimes.multiple.map(x => [new Date(x.startsAt + "+00:00"), "vf"]),
-        ...showtimes.multiple_st.map(x => [new Date(x.startsAt + "+00:00"), "vf_dub"]),
-        ...showtimes.multiple_st_sme.map(x => [new Date(x.startsAt + "+00:00"), "vf_sme"]),
-        ...showtimes.original.map(x => [new Date(x.startsAt + "+00:00"), "vo"]),
-        ...showtimes.original_st.map(x => [new Date(x.startsAt + "+00:00"), "vo_dub"]),
-        ...showtimes.original_st_sme.map(x => [new Date(x.startsAt + "+00:00"), "vo_sme"]),
-      ] as [Date, `${"vo" | "vf"}${"_sme" | "_dub" | ""}`][]
+      let showtimesExtracted: ScheduleItem[] = [
+        ...showtimes.multiple.map(x => ({ allocineInternalId: BigInt(x.internalId), showTime: new Date(x.startsAt + "+00:00"), version: "vf" as const })),
+        ...showtimes.multiple_st.map(x => ({ allocineInternalId: BigInt(x.internalId), showTime: new Date(x.startsAt + "+00:00"), version: "vf_dub" as const })),
+        ...showtimes.multiple_st_sme.map(x => ({ allocineInternalId: BigInt(x.internalId), showTime: new Date(x.startsAt + "+00:00"), version: "vf_sme" as const })),
+        ...showtimes.original.map(x => ({ allocineInternalId: BigInt(x.internalId), showTime: new Date(x.startsAt + "+00:00"), version: "vo" as const })),
+        ...showtimes.original_st.map(x => ({ allocineInternalId: BigInt(x.internalId), showTime: new Date(x.startsAt + "+00:00"), version: "vo_dub" as const })),
+        ...showtimes.original_st_sme.map(x => ({ allocineInternalId: BigInt(x.internalId), showTime: new Date(x.startsAt + "+00:00"), version: "vo_sme" as const })),
+      ]
       schedule[cinema.id] = [...schedule[cinema.id], ...showtimesExtracted]
 
       if (m) {
-        movies.set(movie.title, { ...m, schedule })
+        movies.set(movie.internalId, { ...m, schedule })
       } else {
         let poster = movie.poster !== null ? movie.poster.url : ""
 
@@ -80,7 +129,9 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
           poster = splitedPoster.join("/")
         }
 
-        movies.set(movie.title, {
+        movies.set(movie.internalId, {
+          allocineId: movie.id,
+          allocineInternalId: BigInt(movie.internalId),
           title: movie.title,
           originalTitle: movie.title === movie.originalTitle ? undefined : movie.originalTitle,
           cast: movie.cast.nodes.map(x => {
@@ -106,22 +157,28 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
           poster,
           release: new Date(movie.releases.at(-1)?.releaseDate?.date ?? Date.now()),
           synopsis: movie.synopsis_json?.body?.[0]?.children?.[0]?.text ?? "",
+          allocineRaw: movie,
           schedule,
         })
       }
     }
 
     if (result.pagination.totalPages !== 0 && result.pagination.totalPages !== page) {
+      if (stop) return
       await getMovies(cinema, date, page + 1)
     }
   }
 
   for (let i = 0; i < 7; i++) {
+    if (stop) break
+
     await Promise.all(
       cinemas.map(x => new Promise(async (res, rej) => {
         let errorCount = 0;
 
         async function recursiveFetch() {
+          if (stop) return res(undefined)
+
           let date = new Date(Date.now())
 
           date.setDate(date.getDate() + i)
@@ -134,6 +191,10 @@ export async function getMoviesData(cinemas: Cinema[]): Promise<[MoviesMap, numb
 
             if (errorCount >= 10) {
               return rej("More than 10 errors")
+            }
+
+            if (stop) {
+              return res(undefined)
             }
 
             await delay(1000)

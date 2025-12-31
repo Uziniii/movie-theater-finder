@@ -1,28 +1,37 @@
 import * as cheerio from 'cheerio';
+import createRateLimitedFetch from "../server/helpers/fetcher";
+import FileSystemCache from "../server/helpers/filesystem-cache";
 
 type Cinema = {
   name: string
+  address: string | null
   url: string
 }
 
 const cinemas: Cinema[] = []
 
+const cache = new FileSystemCache("allocine-cinemas")
+const limitedFetch = createRateLimitedFetch(4, cache)
+
 let page = 0
 while (true) {
-  const response = await fetch(`https://www.allocine.fr/salle/cinema/ville-115755/?page=${page}`)
+  const url = `https://www.allocine.fr/salle/cinema/ville-115755/?page=${page}`
+  const response = await limitedFetch(url, undefined, `page-${page}.html`)
   const $ = cheerio.load(await response.text())
   
-  const data = $("#content-layout > div.section.section-wrap.gd-2-cols.gd-gap-30 > div > ul > li > div > div > div > div.meta-theater-title > h2").extract({
-    name: ["a"],
+  const data = $("#content-layout > div.section.section-wrap.gd-2-cols.gd-gap-30 > div > ul > li > div > div > div").extract({
+    name: ["div.meta-theater-title > h2 a"],
+    address: ["address.address"],
     url: [{
-      selector: "a",
+      selector: "div.meta-theater-title > h2 a",
       value: "href"
     }]
   })
   
   const result = data.name.map((x, i) => ({
     name: x.trim(),
-    url: data.url[i]
+    address: data.address?.[i]?.trim(),
+    url: data.url?.[i]
   }))
   
   cinemas.push(...result)
@@ -33,4 +42,4 @@ while (true) {
   page++
 }
 
-Bun.write("prisma/cinemas.json", JSON.stringify(cinemas))
+Bun.write("prisma/cinemas.json", JSON.stringify(cinemas, null, 2) + "\n")

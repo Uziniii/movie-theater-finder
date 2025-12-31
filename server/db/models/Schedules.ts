@@ -18,17 +18,19 @@ export class Schedules {
     const schedules = await client.$queryRaw<Schedule[]>`
       SELECT
         c.name as cinema,
-        GROUP_CONCAT(s.showTime ORDER BY s.showTime SEPARATOR ',') as showTimes,
+        c.address as "cinemaAddress",
+        c.url as "cinemaUrl",
+        string_agg(s."showTime"::text, ',' ORDER BY s."showTime") as showTimes,
         s.version,
-        s.movieId
+        s."movieId"
       FROM schedules s
       LEFT JOIN cinemas c
-      ON c.id = s.cinemaId
+      ON c.id = s."cinemaId"
       WHERE
-        s.movieId IN (${Prisma.join(movies.map(x => x.id))})
-        AND s.showTime BETWEEN FROM_UNIXTIME(${date.getTime() / 1000}) 
-                          AND FROM_UNIXTIME(${dateEnd.getTime() / 1000})
-      GROUP BY s.movieId, s.version, c.id
+        s."movieId" IN (${Prisma.join(movies.map(x => x.id))})
+        AND s."showTime" BETWEEN to_timestamp(${date.getTime() / 1000}) 
+                          AND to_timestamp(${dateEnd.getTime() / 1000})
+      GROUP BY s."movieId", s.version, c.id, c.name, c.address, c.url
     `
 
     return schedules

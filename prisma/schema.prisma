@@ -4,21 +4,24 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model cinemas {
   id        Int         @id @default(autoincrement())
   name      String      @unique(map: "sqlite_autoindex_cinemas_1")
+  address   String?
   url       String
   schedules schedules[]
 }
 
 model movies {
   id            Int         @id @default(autoincrement())
-  title         String      @unique(map: "sqlite_autoindex_movies_1")
-  originalTitle String?     @unique(map: "sqlite_autoindex_movies_2")
+  allocineId     String?     @unique
+  allocineInternalId BigInt   @unique
+  title         String
+  originalTitle String?
   director      String
   cast          String?
   duration      Int?
@@ -26,11 +29,13 @@ model movies {
   release       DateTime
   synopsis      String?     @db.Text
   genres        String
+  allocineRaw   Json?
   schedules     schedules[]
 }
 
 model schedules {
   id       Int      @id @default(autoincrement())
+  allocineInternalId BigInt?  @unique
   cinemaId Int
   movieId  Int
   showTime DateTime
@@ -39,4 +44,5 @@ model schedules {
   cinemas  cinemas  @relation(fields: [cinemaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([showTime], map: "idx_schedules_showTime")
+  @@unique([cinemaId, movieId, showTime, version])
 }

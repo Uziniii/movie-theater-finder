@@ -2,13 +2,15 @@ import { url } from "./lib/url"
 
 type ScheduleFromServer = {
   cinema: string
-  showTimes: string
+  cinemaAddress?: string | null
+  cinemaUrl?: string | null
+  showtimes: string
   version: `${"vo" | "vf"}${"_sme" | "_dub" | ""}`
   movieId: number
 }
 
-export type Schedule = Omit<ScheduleFromServer, "showTimes"> & {
-  showTimes: string[]
+export type Schedule = Omit<ScheduleFromServer, "showtimes"> & {
+  showtimes: string[]
 }
 
 type MovieFromServer = {
@@ -80,7 +82,7 @@ function customSort(schedules: ScheduleFromServer[]): Schedule[] {
 
   return result.map(x => ({
     ...x,
-    showTimes: (x.showTimes as any).split(",")
+    showtimes: (x.showtimes as any).split(",")
   }));
 }
 
@@ -102,14 +104,17 @@ export async function fetchMovies({ queryKey }: { queryKey: [string, string | un
     movies: MovieFromServer[]
     schedules: ScheduleFromServer[]
   }
+  
+  data.schedules.sort((a, b) => new Date(b.showtimes).getTime() - new Date(a.showtimes).getTime())
 
+
+  
   let movies = data.movies.map(m => {
+
     return {
       ...m,
       schedules: customSort(
-        data.schedules
-          .filter(s => s.movieId === m.id)
-          .sort((a, b) => b.showTimes.length - a.showTimes.length)
+        data.schedules.filter(s => s.movieId === m.id)
       )
     }
   })

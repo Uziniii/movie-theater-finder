@@ -10,25 +10,25 @@ services:
           ignore:
             - node_modules/
     entrypoint: ["/bin/sh", "/app/scripts/server-entrypoint.sh"]
-    volumes:
-      - ./server:/app/server:ro
-      - ./src:/app/src:ro
     build:
-      dockerfile: Dockerfile
+      dockerfile: dev.Dockerfile
     depends_on:
       - db
     environment:
-      NODE_ENV: ${NODE_ENV}
-      FETCH: ${FETCH}
-      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: ${NODE_ENV:-development}
+      FETCH: ${FETCH:-true}
+      TEST: ${TEST:-true}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-movies}?schema=public
     working_dir: /app
 
   frontend:
     ports:
       - "3001:3001"
-    entrypoint: ["/bin/sh", "/app/scripts/frontend-entrypoint.sh"]
+    command: ["bun", "vite:dev", "--host"]
     build:
-      dockerfile: Dockerfile
+      dockerfile: dev.Dockerfile
+    depends_on:
+      - app
     working_dir: /app
     develop:
       watch:
@@ -39,17 +39,15 @@ services:
             - node_modules/
 
   db:
-    image: mysql:9.2
+    image: postgres:18
     environment:
-      MYSQL_ROOT_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
-      MYSQL_USER: uzini
-      MYSQL_PASSWORD: pcwBWjcNrGe8ybGggtGnmz2K
-      MYSQL_DATABASE: mydatabase
-      MYSQL_ROOT_HOST: '%'
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-movies}
     ports:
-      - "3336:3306"
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql
 
 volumes:
   db_data:

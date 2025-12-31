@@ -72,6 +72,7 @@ function HomeComponent() {
   const { data, isSuccess } = useQuery({
     queryKey: ["movies", search.date, search.page, search.search],
     queryFn: fetchMovies,
+    staleTime: Infinity,
     enabled: true,
     refetchOnWindowFocus: false
   })

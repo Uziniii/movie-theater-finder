@@ -1,15 +1,17 @@
 export function url(url: string, query?: Record<string, any>) {
   if (query) {
-    const querys = Object.entries(query)
+    const params = new URLSearchParams()
 
-    if (querys.length > 0) {
-      url += "?"
-
-      for (const [key, value] of querys) {
-        if (value) {
-          url += `${key}=${encodeURIComponent(value)}&`
-        }
+    for (const [key, value] of Object.entries(query)) {
+      if (value) {
+        params.set(key, String(value))
       }
+    }
+
+    const qs = params.toString()
+
+    if (qs) {
+      url += `?${qs}`
     }
   }
 

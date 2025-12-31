@@ -7,14 +7,20 @@ import { Movies, MOVIES_PER_PAGE } from "./db/models/Movies.ts";
 import { Schedules } from "./db/models/Schedules.ts";
 import { getMoviesData } from "@/fetch-allocine.ts";
 import cinemas from "@/../prisma/cinemas.json"
-import { compression } from 'elysia-compress'
 import { join } from "path"
 import { existsSync } from "fs"
+import { logger } from "./plugin/logger.ts";
+import { serverTiming } from '@elysiajs/server-timing'
+import { jsonSafe } from "./helpers/json-safe.ts";
+import { compress } from "./plugin/compress.ts";
 
 const { values } = parseArgs({
   args: Bun.argv,
   options: {
     "fetch": {
+      type: 'boolean'
+    },
+    "test": {
       type: 'boolean'
     }
   },
@@ -22,43 +28,46 @@ const { values } = parseArgs({
   allowPositionals: true,
 });
 
-await client.cinemas.createMany({
-  data: cinemas,
-  skipDuplicates: true
-})
+await client.$transaction(
+  cinemas.map((cinema) =>
+    client.cinemas.upsert({
+      where: {
+        name: cinema.name,
+      },
+      create: {
+        name: cinema.name,
+        url: cinema.url,
+        address: cinema.address ?? null,
+      },
+      update: {
+        url: cinema.url,
+        address: cinema.address ?? null,
+      },
+    })
+  )
+)
 
 const job = new Cron("@daily", async () => {
   let startTime = performance.now()
 
   const cinemas = await client.cinemas.findMany();
 
-  const [moviesMap, requestNumber] = await getMoviesData(cinemas)
+  const [moviesMap, requestNumber] = await getMoviesData(cinemas, {
+    maxRequests: values.test ? 10 : undefined
+  })
   const movies = Array.from(moviesMap.values())
 
   await client.$transaction(async (tx) => {
-    await tx.schedules.deleteMany()
-    await tx.movies.deleteMany()
-
     for (let i = 0; i < movies.length; i++) {
-      const { title, originalTitle, cast, director, duration, genres, poster, release, schedule, synopsis } = movies[i];
+      const { allocineId, allocineInternalId, title, originalTitle, cast, director, duration, genres, poster, release, schedule, synopsis, allocineRaw } = movies[i];
 
-      const finalSchedule = []
-      const keys = Object.keys(schedule)
-
-      for (let j = 0; j < keys.length; j++) {
-        const key = keys[j];
-
-        finalSchedule.push(
-          ...schedule[key].map(x => ({
-            cinemaId: +key,
-            showTime: x[0],
-            version: x[1],
-          }))
-        )
-      }
-
-      await tx.movies.create({
-        data: {
+      const movieDb = await tx.movies.upsert({
+        where: {
+          allocineInternalId,
+        },
+        create: {
+          allocineId,
+          allocineInternalId,
           title,
           originalTitle,
           director,
@@ -68,12 +77,43 @@ const job = new Cron("@daily", async () => {
           duration,
           synopsis,
           genres: genres.join(","),
-          schedules: {
-            createMany: {
-              data: finalSchedule
-            }
-          }
-        }
+          allocineRaw,
+        },
+        update: {
+          allocineId,
+          title,
+          originalTitle,
+          director,
+          cast: cast.join(","),
+          poster,
+          release,
+          duration,
+          synopsis,
+          genres: genres.join(","),
+          allocineRaw,
+        },
+      })
+
+      const finalSchedule = []
+      const keys = Object.keys(schedule)
+
+      for (let j = 0; j < keys.length; j++) {
+        const key = keys[j];
+
+        finalSchedule.push(
+          ...schedule[key].map(x => ({
+            allocineInternalId: x.allocineInternalId,
+            cinemaId: +key,
+            movieId: movieDb.id,
+            showTime: x.showTime,
+            version: x.version,
+          }))
+        )
+      }
+
+      await tx.schedules.createMany({
+        data: finalSchedule,
+        skipDuplicates: true,
       })
     }
   }, {
@@ -98,9 +138,9 @@ if (values.fetch) {
 const path = Bun.env.NODE_ENV === "production" ? "/app/server-dist" : "./server"
 
 const app = new Elysia()
-  .use(compression({
-    TTL: 3000,
-  }))
+  .use(logger)
+  .use(compress)
+  .use(serverTiming())
   // .use(staticPlugin({
   //   assets: `./${path}/public/dist/`,
   //   prefix: "/",resolve
@@ -135,7 +175,7 @@ const app = new Elysia()
     // }
   })
   .get("/robots.txt", () => Bun.file(`${path}/public/robots.txt`))
-  .group("/api", (app) =>
+  .group("/api", app =>
     app
       .get("/movies", async ({ movies, schedules, query }) => {
         const date = new Date(query.date ?? Date.now())
@@ -167,12 +207,12 @@ const app = new Elysia()
           }
         }
 
-        return {
+        return jsonSafe({
           maxPage,
           page,
           movies: moviesToday,
           schedules: moviesSchedules
-        }
+        })
       }, {
         query: t.Object({
           date: t.Optional(t.String()),

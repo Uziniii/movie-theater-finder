@@ -15,16 +15,7 @@ RUN bun install
 # Copy source files into application directory
 COPY --chown=app:app . /app
 
-RUN bunx prisma generate
-
 # Fix ownership of node_modules to app user
 RUN chown -R app:app /app/node_modules
-
-# Build the application
-RUN bun server:build
-RUN bun vite:build
-
-# Fix ownership of build outputs to app user
-RUN chown -R app:app /app/server-dist
 
 USER app

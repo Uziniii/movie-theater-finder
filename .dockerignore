@@ -15,6 +15,8 @@ server-dist
 .env.local
 .env.*.local
 
+.cache
+
 # IDE and editor files
 .vscode
 .idea
@@ -52,9 +54,3 @@ logs
 tmp
 temp
 *.tmp
-
-# Package manager files (keep only bun.lockb)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-

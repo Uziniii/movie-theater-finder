@@ -2,9 +2,12 @@ import React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import type { Movie, Schedule } from "@/api"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
+import { Accordion, AccordionContent, AccordionItem, AccordionTriggerWithSub } from "./ui/accordion"
 import { Separator } from "./ui/separator"
 import { ScrollArea } from "./ui/scroll-area"
+import { MapPin, ExternalLink } from "lucide-react"
+import { openCinemaInMaps } from "@/lib/maps"
+import { getAllocineCinemaShowtimesUrl } from "@/lib/allocine"
 
 const versionToText = {
   vo: "- VO",
@@ -20,7 +23,7 @@ type Props = {
   movie: Movie
 }
 
-export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
+export function CardMovie({ movie }: Props) {
   let hours = Math.floor(movie.duration / 60);
   let minutes = movie.duration - (hours * 60);
 
@@ -82,10 +85,62 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
         <Accordion type="single" collapsible className="w-full">
           {movie.schedules.map((s, i) => (
             <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger>{s.cinema} {versionToText[s.version ?? "null"]}</AccordionTrigger>
+              <AccordionTriggerWithSub
+                primary={<>{s.cinema} {versionToText[s.version ?? "null"]}</>}
+                sub={s.cinemaAddress ?? undefined}
+                subClassName="text-xs text-muted-foreground no-underline"
+                action={
+                  <div className="flex items-center gap-1">
+                    <a
+                      href="#"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        openCinemaInMaps({
+                          cinemaName: s.cinema,
+                          cinemaAddress: s.cinemaAddress,
+                        })
+                      }}
+                      aria-label={`Open map for ${s.cinema}`}
+                      title={`Open map for ${s.cinema}`}
+                    >
+                      <MapPin className="h-4 w-4" />
+                    </a>
+
+                    {s.cinemaUrl && s.showtimes.length > 0 && (
+                      <a
+                        href="#"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:text-foreground"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          const d = new Date(s.showtimes[0])
+                          window.open(
+                            getAllocineCinemaShowtimesUrl({
+                              cinemaUrlPath: s.cinemaUrl!,
+                              date: d,
+                            }),
+                            "_blank",
+                            "noreferrer"
+                          )
+                        }}
+                        aria-label={`Open Allociné for ${s.cinema}`}
+                        title={`Open Allociné for ${s.cinema}`}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    )}
+                  </div>
+                }
+              />
               <AccordionContent>
                 <div className="flex flex-wrap gap-2">
-                  {s.showTimes.map((showtime, i) => (
+                  {s.showtimes.map((showtime, i) => (
                     <Badge key={i} variant="default">
                       {Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(new Date(showtime))}
                     </Badge>
@@ -98,4 +153,4 @@ export const CardMovie = React.memo(function CardMovie({ movie }: Props) {
       </ScrollArea>
     </div>
   </Card >
-})
+}
