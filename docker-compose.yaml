@@ -15,7 +15,7 @@ services:
     working_dir: /app
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.movies.rule=Host(`movies.rpi.lan`)"
+      - "traefik.http.routers.movies.rule=HostRegexp(`movies.rpi.{tld:(lan|local)}`)"
       - "traefik.http.routers.movies.entrypoints=https"
       - "traefik.http.routers.movies.tls=true"
       # - "traefik.http.services.movies.loadbalancer.server.port=3000"
