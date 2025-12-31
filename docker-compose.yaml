@@ -18,8 +18,8 @@ services:
       - "traefik.http.routers.movies.rule=Host(`movies.rpi.lan`)"
       - "traefik.http.routers.movies.entrypoints=https"
       - "traefik.http.routers.movies.tls=true"
-      - "traefik.http.services.movies.loadbalancer.server.port=3000"
-      - "traefik.http.services.movies.loadbalancer.server.scheme=http"
+      # - "traefik.http.services.movies.loadbalancer.server.port=3000"
+      # - "traefik.http.services.movies.loadbalancer.server.scheme=http"
       - "coolify.managed=true"
 
   db:

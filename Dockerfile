@@ -27,4 +27,6 @@ RUN bun vite:build
 # Fix ownership of build outputs to app user
 RUN chown -R app:app /app/server-dist
 
+EXPOSE 3000
+
 USER app
