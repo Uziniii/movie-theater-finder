@@ -1,7 +1,5 @@
 services:
   app:
-    ports:
-      - "3000:3000"
     entrypoint: ["/bin/sh", "/app/scripts/server-entrypoint.sh"]
     build:
       dockerfile: Dockerfile
@@ -15,12 +13,9 @@ services:
     working_dir: /app
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.movies.rule=Host(`movies.rpi.lan`)"
-      - "traefik.http.routers.movies.rule=Host(`rpi.local`)"
+      - "traefik.http.routers.movies.rule=Host(`movies.rpi.lan`) || Host(`movies.rpi.local`) || Host(`rpi.local`)"
       - "traefik.http.routers.movies.entrypoints=https"
       - "traefik.http.routers.movies.tls=true"
-      # - "traefik.http.services.movies.loadbalancer.server.port=3000"
-      # - "traefik.http.services.movies.loadbalancer.server.scheme=http"
       - "coolify.managed=true"
 
   db:
