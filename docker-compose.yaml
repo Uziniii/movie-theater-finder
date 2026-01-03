@@ -18,6 +18,7 @@ services:
       - "traefik.http.routers.movies.tls=true"
       - "traefik.http.routers.movies.observability.metrics=true"
       - "loki.enabled=true"
+      - "loki.service_name=movies-server"
 
   db:
     image: postgres:18
