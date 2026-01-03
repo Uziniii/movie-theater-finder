@@ -16,7 +16,8 @@ services:
       - "traefik.http.routers.movies.rule=Host(`movies.rpi.lan`) || Host(`movies.rpi.local`) || Host(`rpi.local`)"
       - "traefik.http.routers.movies.entrypoints=https"
       - "traefik.http.routers.movies.tls=true"
-      - "coolify.managed=true"
+      - "traefik.http.routers.movies.observability.metrics=true"
+      - "loki.enabled=true"
 
   db:
     image: postgres:18
